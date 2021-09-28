@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { ClienteModule } from './cliente';
+import { ClientModule } from './client';
 
 @NgModule({
   declarations: [
@@ -13,7 +13,7 @@ import { ClienteModule } from './cliente';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ClienteModule,
+    ClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
