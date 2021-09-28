@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { ClientService } from './services';
 import { ListClientComponent } from './list-client/list-client.component';
 
+import { RouterModule } from '@angular/router';
+
 
 @NgModule({
   declarations: [
     ListClientComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule,
   ]
 })
 export class ClientModule { }
