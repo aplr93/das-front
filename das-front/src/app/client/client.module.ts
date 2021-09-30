@@ -5,13 +5,15 @@ import { ListClientComponent } from './list-client/';
 import { FormsModule } from '@angular/forms';
 
 import { RouterModule } from '@angular/router';
-import { InsertClientComponent } from './insert-client/insert-client.component';
+import { InsertClientComponent } from './insert-client/';
+import { EditClientComponent } from './edit-client/';
 
 
 @NgModule({
   declarations: [
     ListClientComponent,
-    InsertClientComponent
+    InsertClientComponent,
+    EditClientComponent
   ],
   imports: [
     CommonModule,
