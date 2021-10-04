@@ -1,0 +1,26 @@
+<h1>Novo Produto</h1>
+<div class="well">
+    <form #formProduct="ngForm">
+
+        <div class="form-group">
+            <label for="description">Descrição:</label>
+            <input type="text" class="form-control" id="description" name="description" 
+                [(ngModel)]="product.description" #description="ngModel"
+                required>
+            <div *ngIf="description.errors && (description.dirty || description.touched)" class="alert alert-danger">
+                <div [hidden]="!description.errors.required"> Digite uma descrição para o produto. </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" (click)="insert()" [disabled]="!formProduct.form.valid">
+                <i class="fa fa-save" aria-hidden="true"></i> Salvar
+            </button>
+            <a class="btn btn-secondary" [routerLink]="['/products']">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
+            </a>
+        </div>
+
+    </form>
+</div>
