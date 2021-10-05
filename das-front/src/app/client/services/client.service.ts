@@ -16,43 +16,52 @@ export class ClientService {
     return clients ? JSON.parse(clients) : [];
   }
 
-  insert(client: Client): void {
-    const clients = this.listAll();
+  insert(newClient: Client): void {
+    newClient.id = this.createUserId();
 
-    client.id = new Date().getTime(); // segundos desde epoch
-
-    clients.push(client);
-
-    localStorage[LS_KEY] = JSON.stringify(clients);
+    const existingClients = this.listAll();
+    existingClients.push(newClient);
+    localStorage[LS_KEY] = JSON.stringify(existingClients);
   }
 
-  findById(id: number): Client{
+  findById(clientId: number): Client{
     const clients: Client[] = this.listAll();
-
-    let client = clients.find(client => client.id === id);
-    if(!client) 
-      client = new Client();
-
+    let client = this.searchOrCreateClient(clientId, clients);
     return client;
   }
 
   update(client: Client): void{
-    const clients: Client[] = this.listAll();
+    let clientList: Client[] = this.listAll();
+    clientList = this.iterateAndUpdateClientList(client, clientList);
 
-    clients.forEach( (obj, index, objs) => {
-      if (client.id === obj.id) {
-        objs[index] = client;
-      }
-    });
-
-    localStorage[LS_KEY] = JSON.stringify(clients);
+    localStorage[LS_KEY] = JSON.stringify(clientList);
   }
 
   remove(id: number): void{
     let clients: Client[] = this.listAll();
-
     clients = clients.filter(client => client.id !== id);
 
     localStorage[LS_KEY] = JSON.stringify(clients);
+  }
+
+  private iterateAndUpdateClientList(updatedClient: Client, currentClientList: Client[]): Client[]{
+    currentClientList.forEach( (object, index, objectList) => {
+      if (updatedClient.id === object.id) {
+        objectList[index] = updatedClient;
+      }
+    });
+    return currentClientList;
+  }
+
+  private searchOrCreateClient(id: number, clientList: Client[]): Client{
+    let client = clientList.find(client => client.id === id);
+    if(!client){
+      client = new Client();
+    }
+    return client;
+  }
+
+  private createUserId(): number {
+    return new Date().getTime(); // seconds since epoch
   }
 }
