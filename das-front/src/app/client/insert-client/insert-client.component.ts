@@ -23,7 +23,7 @@ export class InsertClientComponent implements OnInit {
     this.client = new Client();
   }
 
-  inserir(): void {
+  insert(): void {
     if (this.formClient.form.valid) {
       this.clientService.insert(this.client);
       this.router.navigate( ["/clients"] );

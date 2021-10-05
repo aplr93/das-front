@@ -25,8 +25,7 @@ export class EditClientComponent implements OnInit {
     this.client = this.clientService.findById(id);
   }
 
-  update(): void {
-    
+  update(): void {    
     if (this.formClient.form.valid) {
       this.clientService.update(this.client);
       this.router.navigate(['/clients']);

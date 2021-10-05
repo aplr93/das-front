@@ -26,13 +26,20 @@ export class ListClientComponent implements OnInit {
 
   remove($event: any, client: Client): void {
     $event.preventDefault();
-    if (confirm('Deseja realmente remover a pessoa "' + client.firstName + '"?')) {
-      if (client.id)
-      {
-        this.clientService.remove(client.id);
-      }
-
+    if (this.userConfirmsRemoval(client)) {
+      this.removeClientIfRegistered(client);
       this.clients = this.listAll();
+    }
+  }
+
+  userConfirmsRemoval(client: Client): boolean {
+    return confirm('Deseja realmente remover a pessoa "' + client.firstName + '"?');
+  }
+
+  removeClientIfRegistered(client: Client): void{
+    if (client.id)
+    {
+      this.clientService.remove(client.id);
     }
   }
 
