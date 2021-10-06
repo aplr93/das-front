@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { InsertClientComponent } from './insert-client.component';
 
 describe('InsertClientComponent', () => {
@@ -8,7 +9,8 @@ describe('InsertClientComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InsertClientComponent ]
+      declarations: [ InsertClientComponent ],
+      imports: [RouterTestingModule.withRoutes([]), FormsModule],
     })
     .compileComponents();
   });
