@@ -1,0 +1,30 @@
+<h1>Clientes</h1>
+<table class="table table-striped table-bordered table-hover">
+  <tbody>
+    <tr>
+      <th>CPF</th>
+      <th>Nome</th>
+      <th>Sobrenome</th>
+      <th class="text-center">
+        <a [routerLink]="['/clients/new']"
+          href="#" title="New" alt="New" class="btn btn-xs btn-success">
+          <i class="fa fa-plus" aria-hidden="true"></i> New
+        </a>
+      </th>
+    </tr>
+    <tr *ngFor="let client of clients">
+      <td> {{ client.cpf }} </td>
+      <td> {{ client.firstName }} </td>
+      <td> {{ client.lastName }} </td>
+      <td class="text-center" style="width: 300px">
+        <a href="#" title="Edit" alt="Edit" class="btn btn-xs btn-info" [routerLink]="['/clients/edit', client.id]">
+          <i class="fa fa-edit" aria-hidden="true"></i> Editar
+        </a>
+        <a href="#" title="Remove" alt="Remove" class="btn btn-xs btn-danger" (click)="remove($event, client)">
+          <i class="fa fa-times" aria-hidden="true"></i> Remover
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p *ngIf="clients.length===0">Nenhuma cliente cadastrado.</p>

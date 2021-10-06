@@ -1,0 +1,84 @@
+<h1>Editar Cliente</h1>
+<div class="well">
+    <form #formClient="ngForm">
+
+        <div class="form-group">
+            <label for="cpf">CPF:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="cpf"
+              name="cpf"
+              minlength="11"
+              maxlength="11"
+              required
+              
+              [(ngModel)]="client.cpf"
+              #cpf="ngModel"
+            />
+            
+            <div
+              class="alert alert-danger"
+              *ngIf="cpf.errors && (cpf.dirty || cpf.touched)"
+            >
+              <div [hidden]="!cpf.errors.required">Digite o CPF do cliente.</div>
+              <div [hidden]="!cpf.errors.minlength">
+                O CPF deve conter exatamente 11 caracteres numéricos.
+              </div>
+            </div>
+          </div>
+      
+          <div class="form-group">
+            <label for="firstName">Nome:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              minlength="2"
+              required
+              [(ngModel)]="client.firstName"
+              #firstName="ngModel"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="firstName.errors && (firstName.dirty || firstName.touched)"
+            >
+              <div [hidden]="!firstName.errors.required">Digite o nome do cliente.</div>
+              <div [hidden]="!firstName.errors.minlength">
+                O nome deve conter ao menos 2 caracteres.
+              </div>
+            </div>
+          </div>
+      
+          <div class="form-group">
+              <label for="lastName">Sobrenome:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                name="lastName"
+                minlength="2"
+                required
+                [(ngModel)]="client.lastName"
+                #lastName="ngModel"
+              />
+              <div
+                class="alert alert-danger"
+                *ngIf="lastName.errors && (lastName.dirty || lastName.touched)"
+              >
+                <div [hidden]="!lastName.errors.required">Digite o sobrenome do cliente.</div>
+                <div [hidden]="!lastName.errors.minlength">
+                  O sobrenome deve conter ao menos 2 caracteres.
+                </div>
+              </div>
+            </div>
+
+        <button type="button" class="btn btn-primary" (click)="update()" [disabled]="!formClient.form.valid">
+            <i class="fa fa-save" aria-hidden="true"></i> Atualizar
+        </button>
+        <a class="btn btn-secondary" [routerLink]="['/clients']">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
+        </a>
+    </form>
+</div>
