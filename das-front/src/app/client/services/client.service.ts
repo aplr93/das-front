@@ -12,7 +12,7 @@ export class ClientService {
   constructor() { }
 
   listAll(): Client[]{
-    const clients = localStorage[LS_KEY];
+    const clients = localStorage.getItem(LS_KEY);
     return clients ? JSON.parse(clients) : [];
   }
 
@@ -21,7 +21,7 @@ export class ClientService {
 
     const existingClients = this.listAll();
     existingClients.push(newClient);
-    localStorage[LS_KEY] = JSON.stringify(existingClients);
+    localStorage.setItem(LS_KEY, JSON.stringify(existingClients));
   }
 
   findById(clientId: number): Client{
@@ -34,14 +34,14 @@ export class ClientService {
     let clientList: Client[] = this.listAll();
     clientList = this.iterateAndUpdateClientList(client, clientList);
 
-    localStorage[LS_KEY] = JSON.stringify(clientList);
+    localStorage.setItem(LS_KEY, JSON.stringify(clientList));
   }
 
   remove(id: number): void{
     let clients: Client[] = this.listAll();
     clients = clients.filter(client => client.id !== id);
 
-    localStorage[LS_KEY] = JSON.stringify(clients);
+    localStorage.setItem(LS_KEY, JSON.stringify(clients) );
   }
 
   private iterateAndUpdateClientList(updatedClient: Client, currentClientList: Client[]): Client[]{
