@@ -13,7 +13,7 @@ import { ClientModule } from './client';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ProductModule
+    ProductModule,
     ClientModule,
   ],
   providers: [],
