@@ -1,0 +1,39 @@
+<h1>Editar Pedido</h1>
+<div class="well">
+    <form #formOrder="ngForm">
+
+        <div class="form-group">
+            <label for="id">ID:</label>
+            <a> {{order.id}} </a>
+            <p></p>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Data:</label>
+            <input type="text" class="form-control" id="date" name="date" 
+                [(ngModel)]="order.date" #date="ngModel">
+        </div>
+
+        <div class="form-group">
+            <label for="client">Cliente:</label>
+            <input type="text" class="form-control" id="client" name="client" 
+                [(ngModel)]="order.client" #client="ngModel">
+        </div>
+
+        <div class="form-group">
+            <label for="items">Items:</label>
+            <input type="text" class="form-control" id="items" name="items" 
+                [(ngModel)]="order.items" #items="ngModel">
+        </div>
+
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" (click)="update()" [disabled]="!formOrder.form.valid">
+                <i class="fa fa-save" aria-hidden="true"></i> Atualizar
+            </button>
+            <a class="btn btn-secondary" [routerLink]="['/orders']">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
+            </a>
+        </div>
+        
+    </form>
+</div>
