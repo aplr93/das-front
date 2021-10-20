@@ -1,0 +1,49 @@
+<h1>Novo Pedido</h1>
+<div class="well">
+    <form #formOrder="ngForm">
+
+        <div class="form-group">
+            <label for="id_cliente">CPF do Cliente</label>
+            <input type="text" class="form-control" id="id_cliente" name="id_cliente" 
+                [(ngModel)]="order.id_cliente" #id_cliente="ngModel"
+                required>
+            <div *ngIf="id_cliente.errors && (id_cliente.dirty || id_cliente.touched)" class="alert alert-danger">
+                <div [hidden]="!id_cliente.errors.required"> Digite o CPF do cliente do pedido </div>
+            </div>
+            <!-- <span *ngIf="formOrder.controls.id_client.errors?.invalidNumber">   
+                Ja Existe um Pedido com esse CPF
+            </span> -->
+        </div>
+
+        <!-- <div class="form-group">
+            <label for="id_cliente">Produto</label>
+            <input type="datalist" class="form-control" id="id_cliente" name="id_cliente" 
+                [(ngModel)]="order.id_cliente" #id_cliente="ngModel"
+                required>
+            <div *ngIf="id_cliente.errors && (id_cliente.dirty || id_cliente.touched)" class="alert alert-danger">
+                <div [hidden]="!id_cliente.errors.required"> Digite o produto que deseja </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="id_cliente">Quantidade</label>
+            <input type="datalist" class="form-control" id="id_cliente" name="id_cliente" 
+                [(ngModel)]="order.id_cliente" #id_cliente="ngModel"
+                required>
+            <div *ngIf="id_cliente.errors && (id_cliente.dirty || id_cliente.touched)" class="alert alert-danger">
+                <div [hidden]="!id_cliente.errors.required"> Digite a quantidade </div>
+            </div>
+        </div> -->
+
+
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" (click)="insert()" [disabled]="!formOrder.form.valid">
+                <i class="fa fa-save" aria-hidden="true"></i> Salvar
+            </button>
+            <a class="btn btn-secondary" [routerLink]="['/orders']">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
+            </a>
+        </div>
+
+    </form>
+</div>
