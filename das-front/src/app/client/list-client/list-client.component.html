@@ -13,7 +13,7 @@
       </th>
     </tr>
     <tr *ngFor="let client of clients">
-      <td> {{ client.cpf }} </td>
+      <td> {{ client.cpf! | mask: '000.000.000-00' }} </td>
       <td> {{ client.firstName }} </td>
       <td> {{ client.lastName }} </td>
       <td class="text-center" style="width: 300px">

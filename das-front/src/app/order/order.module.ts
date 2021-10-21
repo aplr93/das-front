@@ -7,6 +7,7 @@ import { OrderService } from './services/order.service';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxMaskModule, IConfig } from 'ngx-mask'
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     RouterModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    NgxMaskModule.forRoot()
   ],
   providers: [
     OrderService

@@ -30,6 +30,12 @@ export class ClientService {
     return client;
   }
 
+  findByCPF(cpf: string): Client | undefined{
+    let clientList: Client[] = this.listAll();
+    let client = clientList.find( client => client.cpf === cpf);
+    return client;
+  }
+
   update(client: Client): void{
     let clientList: Client[] = this.listAll();
     clientList = this.iterateAndUpdateClientList(client, clientList);

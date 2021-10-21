@@ -10,13 +10,15 @@ import { OrderService } from '../services/order.service';
 export class ListOrderComponent implements OnInit {
 
   orders!: Order[];
+  AllOrders!: Order[];
 
   constructor(
     private orderService: OrderService
   ) { }
 
   ngOnInit(): void {
-    this.orders = this.listAll();
+    this.AllOrders = this.listAll();
+    this.orders = this.AllOrders;
   }
 
   listAll(): Order[]{
@@ -29,5 +31,13 @@ export class ListOrderComponent implements OnInit {
       this.orderService.remove(order.id!);
       this.orders = this.listAll();
     }
+  }
+
+  filterByCPF(cpf: string): void{
+    this.orders = this.AllOrders.filter( (order) => order.client?.cpf == cpf);
+  }
+
+  removeFilter(): void{
+    this.orders = this.AllOrders;
   }
 }

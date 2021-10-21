@@ -1,46 +1,145 @@
 <h1>Novo Pedido</h1>
 
-
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
-        <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="CPF" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Buscar</button>
+        <form class="col d-flex">
+            <input class="form-control me-2 " type="search" placeholder="CPF" aria-label="Search" #CPF>
+            <button class="btn btn-outline-success" type="button" (click)="buscar(CPF.value)">Buscar</button>
+        </form>
+        <form class="col d-flex"></form>
+
+        <div class="col d-flex">
+            <ngb-timepicker [(ngModel)]="timePicker" [seconds]="true" [spinners]="spinners"></ngb-timepicker>
+            <button class="btn btn-outline-secondary far fa-clock" 
+            (click)="toggleSpinners()" type="button"></button>
+        </div>
+
+        <form class="form-inline">
+            <div class="form-group">
+                <div class="input-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="datePicker"
+                        ngbDatepicker [footerTemplate]="footerTemplate" #d="ngbDatepicker">
+                    <button class="btn btn-outline-secondary far fa-calendar-alt " (click)="d.toggle()"
+                        type="button"></button>
+                </div>
+            </div>
         </form>
     </div>
 </nav>
 
+
+
+<ng-template #footerTemplate>
+    <hr class="my-0">
+    <button class="btn btn-primary btn-sm m-2 float-left" (click)="datePicker = today; d.close()">Hoje</button>
+    <button class="btn btn-secondary btn-sm m-2 float-right" (click)="d.close()">Fechar</button>
+</ng-template>
+
+<p *ngIf="cpfNotFound">
+    <ngb-alert type="danger" (closed)="closeAlert()">CPF não encontrado</ngb-alert>
+</p>
+
+<div *ngIf="customer" class="card">
+    <div class="card-body">
+        {{customer.firstName}} {{customer.lastName}} (CPF: {{customer.cpf! | mask: '000.000.000-00' }})
+    </div>
+</div>
+
+<hr>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h4>Produtos disponíveis</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Descrição</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of products">
+                        <td>{{ product.description }}</td>
+                        <td class="text-center" style="width: 250px">
+                            <form class="d-flex">
+                                <input class="form-control me-2" type="text" placeholder="Qtd" aria-label="Qtd" #Qtd>
+                                <a href="#" title="Remove" alt="Remove" class="btn btn-xs btn-success"
+                                    (click)="addProduct($event, product, Qtd.value); Qtd.value=''" style="width: 150px">
+                                    <i class="fas fa-plus-square" aria-hidden="true"></i> Add
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between p-2">
+                <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize"
+                    (pageChange)="refreshProducts()">
+                </ngb-pagination>
+
+                <select class="form-select" style="width: auto" [(ngModel)]="pageSize"
+                    (ngModelChange)="refreshProducts()">
+                    <option [ngValue]="4">4 items por página</option>
+                    <option [ngValue]="6">6 items por página</option>
+                    <option [ngValue]="8">8 items por página</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>Items do Pedido</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Produto</th>
+                        <th scope="col">Quantidade</th>
+
+                    </tr>
+                </thead>
+                <tbody *ngIf="orderItems">
+                    <tr *ngFor="let item of orderItems">
+                        <td>{{ item.product?.description }}</td>
+                        <td>
+                            <div class="d-flex justify-content-between p-2">
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-secondary fas fa-minus-square"
+                                        (click)="removeOne($event, item)"></button>
+                                    <button type="button" style="width: 50px" class="btn btn-secondary disabled">
+                                        {{ item.quantity }}</button>
+
+                                    <button type="button" class="btn btn-secondary fas fa-plus-square"
+                                        (click)="addOne($event, item)"></button>
+                                </div>
+                                <form class="d-flex">
+                                    <a href="#" title="Remove" alt="Remove" class="btn btn-dark" style="width: 120px"
+                                        (click)="removeItem($event, item)">
+                                        <i class="fas fa-times" aria-hidden="true"></i> Remover
+                                    </a>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<hr>
+
 <div class="well">
-
     <form #formOrder="ngForm">
-
-
-
-        <div class="form-group">
-            <label for="date">Data:</label>
-            <input type="text" class="form-control" id="date" name="date" [(ngModel)]="order.date" #date="ngModel">
-        </div>
-
-        <div class="form-group">
-            <label for="client">Cliente:</label>
-            <input type="text" class="form-control" id="client" name="client" [(ngModel)]="order.client"
-                #client="ngModel">
-        </div>
-
-        <div class="form-group">
-            <label for="items">Items:</label>
-            <input type="text" class="form-control" id="items" name="items" [(ngModel)]="order.items" #items="ngModel">
-        </div>
-
-
-        <div class="form-group">
+        <div class="form-group text-center">
             <button type="button" class="btn btn-primary" (click)="insert()" [disabled]="!formOrder.form.valid">
                 <i class="fa fa-save" aria-hidden="true"></i> Salvar
-            </button>
+            </button>&nbsp;
             <a class="btn btn-secondary" [routerLink]="['/orders']">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
             </a>
         </div>
-
     </form>
 </div>
+
+<p></p>
