@@ -109,10 +109,11 @@ describe('OrderService', () => {
 
   })
 
-  // it('should update itens' () => {
-  //     orderService.update(new Order(4, mockedDate, {id: 123123123432, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"}, [{ product: {id: 999, description: "Agua coca Latão"}, quantity: 1}]));
-  //   expect(order.findById(2).firstName).toEqual("Gabriela");
-  // })
+  it('should update order id 3 to id 456 , ˜Pneu de Carro" and quantity 1', () => {
+    orderService.update(new Order(3, mockedDate, {id: 123123123432, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"}, [{ product: {id: 456, description: "Pneu de Carro"}, quantity: 1}]));
+    expect(orderService.searchById(3).items).toEqual([{ product: {id: 456, description: "Pneu de Carro"}, quantity: 1}]);
+  })
+
   
   it('should remove order with id=2', () => {
    orderService.remove(2);
