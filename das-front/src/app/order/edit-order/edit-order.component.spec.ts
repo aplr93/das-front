@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { EditOrderComponent } from './edit-order.component';
 
 describe('EditOrderComponent', () => {
@@ -8,7 +9,8 @@ describe('EditOrderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EditOrderComponent ]
+      declarations: [ EditOrderComponent ],
+      imports: [RouterTestingModule.withRoutes([]), FormsModule]
     })
     .compileComponents();
   });
@@ -20,6 +22,6 @@ describe('EditOrderComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+   expect(component).toBeTruthy();
   });
 });

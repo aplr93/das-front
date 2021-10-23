@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { InsertOrderComponent } from './insert-order.component';
 
@@ -8,7 +11,8 @@ describe('InsertOrderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InsertOrderComponent ]
+      declarations: [ InsertOrderComponent ],
+      imports: [RouterTestingModule.withRoutes([]), FormsModule, NgbModule]
     })
     .compileComponents();
   });
@@ -22,4 +26,7 @@ describe('InsertOrderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });
+
+
