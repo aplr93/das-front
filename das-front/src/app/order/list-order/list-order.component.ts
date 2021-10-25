@@ -10,15 +10,15 @@ import { OrderService } from '../services/order.service';
 export class ListOrderComponent implements OnInit {
 
   orders!: Order[];
-  AllOrders!: Order[];
+  allOrders!: Order[];
 
   constructor(
     private orderService: OrderService
   ) { }
 
   ngOnInit(): void {
-    this.AllOrders = this.listAll();
-    this.orders = this.AllOrders;
+    this.allOrders = this.listAll();
+    this.orders = this.allOrders;
   }
 
   listAll(): Order[]{
@@ -27,17 +27,19 @@ export class ListOrderComponent implements OnInit {
 
   remove($event: any, order: Order): void {
     $event.preventDefault();
-    if (confirm('Deseja realmente remover o pedido "' + order.id + '"?')) {
+    if (confirm('Deseja realmente remover o pedido #' + order.id + ' ?')) {
       this.orderService.remove(order.id!);
-      this.orders = this.listAll();
+      this.allOrders = this.listAll();
+      this.removeFilter();
     }
   }
 
   filterByCPF(cpf: string): void{
-    this.orders = this.AllOrders.filter( (order) => order.client?.cpf == cpf);
+    this.orders = this.allOrders
+      .filter( (order) => order.client?.cpf == cpf.replace(/\D/g,''));
   }
 
   removeFilter(): void{
-    this.orders = this.AllOrders;
+    this.orders = this.allOrders;
   }
 }

@@ -3,11 +3,11 @@
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
         <form class="col d-flex ">
-            <input class="form-control me-2 " type="search" placeholder="CPF" aria-label="Search" #CPF>
+            <input class="form-control me-2 " type="search" placeholder="CPF" #CPF mask="000.000.000-00">
             <button class="btn btn-outline-success" type="button" (click)='filterByCPF(CPF.value)'>Filtrar</button>
-            <button class="btn btn-outline-success" type="button" (click)='removeFilter()'>Limpar</button>
+            <button class="btn btn-outline-success" type="button" (click)='removeFilter(); CPF.value=""'>Limpar</button>
         </form>
-        <form class="col d-flex"></form>
+        <form class="col"></form>
         <form class="col d-flex">
             <a [routerLink]="['/orders/new']" href="#" title="New" alt="New" class="btn btn-xs btn-success">
                 <i class="fa fa-plus" aria-hidden="true"></i> Novo
@@ -20,31 +20,31 @@
 
 <ngb-accordion [closeOthers]="true">
     <ngb-panel *ngFor="let order of orders" >
-        <!-- title="Pedido {{order.id}} ({{order.client!.firstName}} {{order.client!.lastName}})"  -->
         
         <ng-template ngbPanelHeader>
             <div class="d-flex align-items-center justify-content-between">
-                <div class="m-0">Pedido {{order.id}} ({{order.client!.firstName}} {{order.client!.lastName}})</div>
+                <div class="col m-0">Pedido #{{order.id}} ({{order.client!.firstName}} {{order.client!.lastName}})</div>
+                <div class="col">
                     <button ngbPanelToggle class="btn btn-outline-secondary  m-2"> 
                         <i class="far fa-eye"></i> Ver
                     </button>
-                <div></div>
+                </div>
             </div>
         </ng-template>
+
         <ng-template ngbPanelContent>
-            <div class="container">
-                <div class="row">
+            <div class="container-fluid d-flex">
+                <div class="row justify-content-start">
                     <div class="col">
                         <p><b>ID:</b> {{order.id}} </p>
-                        <p><b>Data:</b> {{order.date}} </p>
                         <p><b>Cliente:</b> {{order.client!.firstName}} {{order.client!.lastName}}</p>
+                        <p><b>Data:</b> {{order.date! | json | mask: "0000/M0/d0 Hh:m0:s0" }} </p>
                     </div>
-                    <div class="col"></div>
-                    <div class="col">
+                    <div class="col" style="width: 300px">
                         <a [routerLink]="['/orders/edit', order.id]" href="#" title="Edit" alt="Edit"
                             class="btn btn-xs btn-info">
                             <i class="fa fa-edit" aria-hidden="true"></i> Editar
-                        </a>
+                        </a>&nbsp;
                         <a href="#" title="Remove" alt="Remove" class="btn btn-xs btn-danger"
                             (click)="remove($event, order)">
                             <i class="fa fa-times" aria-hidden="true"></i> Remover
@@ -52,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            <table class="table table-striped table-bordered table-hover">
+            <table class="table table-striped table-bordered table-hover d-flex">
                 <tbody>
                     <tr>
                         <th>Produto</th>

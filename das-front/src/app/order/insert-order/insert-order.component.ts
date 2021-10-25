@@ -4,14 +4,10 @@ import { Router } from '@angular/router';
 import { NgbCalendar, NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { ClientService } from 'src/app/client/services';
 import { ProductService } from 'src/app/product/services/product.service';
-import { Client } from 'src/app/shared/models';
 import { OrderItem } from 'src/app/shared/models/order-item.model';
 import { Order } from 'src/app/shared/models/order.model';
 import { Product } from 'src/app/shared/models/product.model';
 import { OrderService } from '../services/order.service';
-
-
-let carlos: Client = new Client(1, "07516336904", "Carlos", "Severino");
 
 
 @Component({
@@ -20,28 +16,24 @@ let carlos: Client = new Client(1, "07516336904", "Carlos", "Severino");
   styleUrls: ['./insert-order.component.css']
 })
 export class InsertOrderComponent implements OnInit {
-
   @ViewChild('formOrder') formOrder! : NgForm;
   order! : Order;
   allProducts!: Product[];
   products!: Product[];
-  customer!: Client;
-  orderItems: OrderItem[] = [];
   
   page = 1;
   pageSize = 4;
   collectionSize!: number;
 
-  datePicker!: NgbDateStruct;
-  date!: Date;
   today = this.calendar.getToday();
+  datePicker: NgbDateStruct = this.today;
   
   timePicker!: NgbTimeStruct;
-  spinners = false;
+  spinners: boolean = false;
 
-  cpfNotFound = false;
+  cpfNotFound: boolean = false;
 
-  
+
   constructor(
     private orderService: OrderService,
     private productService: ProductService,
@@ -53,61 +45,63 @@ export class InsertOrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.order = new Order();
+    this.order.items = [];
+    this.order.date = new Date();
+    this.dateToTimePicker();
     this.allProducts = this.listAllProducts();
-    this.collectionSize = this.allProducts.length;
     this.refreshProducts();
-    this.date = new Date();
-    this.datePicker = {day: this.date.getUTCDay(), month: this.date.getUTCMonth(), year: this.date.getUTCFullYear()};
-    this.timePicker = {hour: this.date.getHours() , minute: this.date.getMinutes(), second: this.date.getSeconds()};
   }
 
-  insert(): void{
-    if (this.formOrder.form.valid) {
-      this.order.items = this.orderItems;
-      this.order.client = this.customer;
-      this.date.setUTCFullYear(this.datePicker.year, this.datePicker.month, this.datePicker.day);
-      this.date.setUTCHours(this.timePicker.hour, this.timePicker.minute, this.timePicker.second);
 
-      this.order.date = this.date;
+  insert(): void{
+    if ( this.orderIsValid() ) {
+      this.datetimePickerToDate();
+      this.order.items = this.order.items!.filter(item => item.quantity! > 0);
       this.orderService.insert(this.order);
       this.router.navigate( ["/orders"] );
     }
   }
   
+
   refreshProducts(): void {
     this.products = this.allProducts
       .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
   }
 
-  buscar(cpf: string) {
-    let cus = this.clientService.findByCPF(cpf)
-    console.log("CPF: "+cus)
-    if (cus){
-      this.customer = cus;
+
+  searchCPF(Cpf: string) {
+    let customer = this.clientService.findByCPF(Cpf.replace(/\D/g,''))
+    if (customer){
+      this.cpfNotFound = false;
+      this.order.client = customer;
     }
     else{
       this.cpfNotFound = true;
+      this.order.client = undefined;
     }
   }
 
+
   listAllProducts(): Product[]{
-    return this.productService.listAll();
+    let products = this.productService.listAll();
+    this.collectionSize = products.length;
+    return products;
   }
+
 
   removeOne($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.orderItems.forEach( (obj) => {
-      if ( orderItem.product?.id === obj.product?.id ){
-        if (obj.quantity != null && obj.quantity > 0){
-          obj.quantity = obj.quantity-1;
-        }
+    this.order.items!.forEach( (item) => {
+      if ( orderItem.product?.id === item.product?.id && item.quantity != null && item.quantity > 0){
+        item.quantity = item.quantity-1; 
       }
     })
   }
 
+
   addOne($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.orderItems.forEach( (obj) => {
+    this.order.items!.forEach( (obj) => {
       if (obj.quantity != null && orderItem.product?.id === obj.product?.id ){
         obj.quantity = obj.quantity+1;
       }
@@ -117,8 +111,8 @@ export class InsertOrderComponent implements OnInit {
 
   removeItem($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.orderItems.forEach( (obj, index, objs) => {
-      if (orderItem.product?.id === obj.product?.id && obj.quantity != null){
+    this.order.items!.forEach( (obj, index, objs) => {
+      if (orderItem.product?.id === obj.product?.id){
         objs.splice(index,1);
       }
     })
@@ -128,24 +122,51 @@ export class InsertOrderComponent implements OnInit {
   addProduct($event: any, product: Product, qtd: string): void{
     $event.preventDefault();
     let found =  false;
-    this.orderItems.forEach( (obj) => {
+    this.order.items!.forEach( (obj) => {
       if (obj.product?.id == product.id){
         obj.quantity! += parseInt(qtd);
         found = true;
       }
     });
     if (!found){
-      this.orderItems.push( new OrderItem(product, parseInt(qtd)) );
+      this.order.items!.push( new OrderItem(product, parseInt(qtd)) );
     }
   }
 
 
-  toggleSpinners() {
+  toggleTimeSpinners(): void {
     this.spinners = !this.spinners;
   } 
 
-  closeAlert() {
+
+  closeCpfAlert(): void {
     this.cpfNotFound = false;
+  }
+
+
+  orderIsValid(): boolean{
+    let hasProducts = this.order.items!
+      .filter(item => item.quantity! > 0).length > 0 ? true : false;
+
+    if (this.order.client && hasProducts )
+      return true;
+    else
+      return false;
+  }
+
+
+  private dateToTimePicker(): void {
+    this.timePicker = {
+      hour: this.order.date!.getHours(),
+      minute: this.order.date!.getMinutes(),
+      second: this.order.date!.getSeconds()
+    };
+  }
+
+
+  private datetimePickerToDate(): void {
+    this.order.date?.setUTCFullYear(this.datePicker.year, this.datePicker.month - 1, this.datePicker.day);
+    this.order.date?.setUTCHours(this.timePicker.hour, this.timePicker.minute, this.timePicker.second);
   }
 
 }
