@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { InsertClientComponent } from './insert-client/';
 import { EditClientComponent } from './edit-client/';
-import { NgxMaskModule, IConfig } from 'ngx-mask'
+import { NgxMaskModule } from 'ngx-mask';
 
 
 @NgModule({

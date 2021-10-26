@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
 import { Order } from 'src/app/shared/models/order.model';
-import { OrderItem } from 'src/app/shared/models/order-item.model';
 import { OrderService } from './order.service';
 
 
@@ -34,7 +33,7 @@ import { OrderService } from './order.service';
 describe('OrderService', () => {
   let orderService: OrderService;
 
-  const mockedDate = new Date(Date.now())
+  const mockedDate = new Date(Date.now());
 
 
   let orders: Order[] = [
@@ -89,17 +88,16 @@ describe('OrderService', () => {
 
   it('when search id 1 should return today`s day, today`s month, todays`s  year, client id 1634999816068, client cpf 08774201905, client firstName Joao and client lastName Balzer', () => {
 
-    const date = orderService.searchById(1).date
-    const client = orderService.searchById(1).client
-    console.log(client)
+    const date = orderService.searchById(1).date;
+    const client = orderService.searchById(1).client;
 
-    let record_day= ((mockedDate.getDate()))
-    let record_month = ((mockedDate.getMonth() + 1)) 
-    let record_year = (mockedDate.getFullYear())
+    let record_day= ((mockedDate.getDate()));
+    let record_month = ((mockedDate.getMonth() + 1));
+    let record_year = (mockedDate.getFullYear());
 
-    let mocked_day= ((mockedDate.getDate()))
-    let mocked_month = ((mockedDate.getMonth() + 1)) 
-    let mocked_year = (mockedDate.getFullYear())
+    let mocked_day= ((mockedDate.getDate()));
+    let mocked_month = ((mockedDate.getMonth() + 1)); 
+    let mocked_year = (mockedDate.getFullYear());
 
     expect(record_day).toEqual(mocked_day);
     expect(record_month).toEqual(mocked_month);
@@ -109,7 +107,7 @@ describe('OrderService', () => {
 
   })
 
-  it('should update order id 3 to id 456 , ˜Pneu de Carro" and quantity 1', () => {
+  it('should update order id 3 to id 456 , "Pneu de Carro" and quantity 1', () => {
     orderService.update(new Order(3, mockedDate, {id: 123123123432, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"}, [{ product: {id: 456, description: "Pneu de Carro"}, quantity: 1}]));
     expect(orderService.searchById(3).items).toEqual([{ product: {id: 456, description: "Pneu de Carro"}, quantity: 1}]);
   })

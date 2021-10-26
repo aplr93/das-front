@@ -6,8 +6,8 @@ import { InsertProductComponent } from './product/insert-product/insert-product.
 import { ListProductComponent } from './product/list-product/list-product.component';
 
 import { ListClientComponent } from './client/list-client/';
-import { InsertClientComponent } from './client/insert-client/'
-import { EditClientComponent } from './client/edit-client/'
+import { InsertClientComponent } from './client/insert-client/';
+import { EditClientComponent } from './client/edit-client/';
 import { ListOrderComponent } from './order/list-order/list-order.component';
 import { InsertOrderComponent } from './order/insert-order/insert-order.component';
 import { EditOrderComponent } from './order/edit-order/edit-order.component';
