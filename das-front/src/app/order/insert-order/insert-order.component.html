@@ -67,8 +67,9 @@
                         <td>{{ product.description }}</td>
                         <td class="text-center" style="width: 250px">
                             <form class="d-flex">
-                                <input class="form-control me-2" type="text" placeholder="Qtd" aria-label="Qtd" #Qtd>
-                                <a href="#" title="Remove" alt="Remove" class="btn btn-xs btn-success"
+                                <input class="form-control me-2" type="number" min="0" max="1000" step="1" 
+                                    placeholder="Qtd" aria-label="Qtd" #Qtd>
+                                <a href="#" title="Add" alt="Add" class="btn btn-xs btn-success"
                                     (click)="addProduct($event, product, Qtd.value); Qtd.value=''" style="width: 150px">
                                     <i class="fas fa-plus-square" aria-hidden="true"></i> Add
                                 </a>

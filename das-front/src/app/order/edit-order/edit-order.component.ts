@@ -54,6 +54,7 @@ export class EditOrderComponent implements OnInit {
   update(): void {
     if ( this.orderIsValid() ) {
       this.datetimePickerToDate();
+      this.order.items = this.order.items!.filter(item => item.quantity! > 0);
       this.orderService.update(this.order);
       this.router.navigate(['/orders']);
     }
@@ -105,15 +106,17 @@ export class EditOrderComponent implements OnInit {
   
   addProduct($event: any, product: Product, qtd: string): void{
     $event.preventDefault();
-    let found =  false;
-    this.order.items!.forEach( (obj) => {
-      if (obj.product?.id == product.id){
-        obj.quantity! += parseInt(qtd);
-        found = true;
+    if( parseInt(qtd)>0 && parseInt(qtd)<=1000 ){
+      let found =  false;
+      this.order.items!.forEach( (obj) => {
+        if (obj.product?.id == product.id){
+          obj.quantity! += parseInt(qtd);
+          found = true;
+        }
+      });
+      if (!found){
+        this.order.items!.push( new OrderItem(product, parseInt(qtd)) );
       }
-    });
-    if (!found){
-      this.order.items!.push( new OrderItem(product, parseInt(qtd)) );
     }
   }
 
