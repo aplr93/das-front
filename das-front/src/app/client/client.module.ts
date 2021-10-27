@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { InsertClientComponent } from './insert-client/';
 import { EditClientComponent } from './edit-client/';
+import { NgxMaskModule } from 'ngx-mask';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { EditClientComponent } from './edit-client/';
     CommonModule,
     RouterModule,
     FormsModule,
+    NgxMaskModule.forRoot()
   ],
   providers: [
     ClientService,
