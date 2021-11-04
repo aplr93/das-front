@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { ClientService } from '../services/client.service';
 import { Client } from '../../shared/models';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-list-client',
@@ -17,10 +18,12 @@ export class ListClientComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.clients = this.listAll();
+    this.listAll().subscribe(
+      clientList => this.clients = clientList
+    );
   }
 
-  listAll(): Client[] {
+  listAll(): Observable<Client[]> {
     return this.clientService.listAll();
   }
 
@@ -28,7 +31,9 @@ export class ListClientComponent implements OnInit {
     $event.preventDefault();
     if (this.userConfirmsRemoval(client)) {
       this.removeClientIfRegistered(client);
-      this.clients = this.listAll();
+      this.listAll().subscribe(
+        clientList => this.clients = clientList
+      );
     }
   }
 
