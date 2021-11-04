@@ -11,7 +11,7 @@ import { ClientService } from '../services/client.service';
 })
 export class InsertClientComponent implements OnInit {
 
-  @ViewChild('formClient') formClient!: NgForm;  
+  @ViewChild('formClient') formClient!: NgForm;
   client!: Client;
 
   constructor(
@@ -25,8 +25,11 @@ export class InsertClientComponent implements OnInit {
 
   insert(): void {
     if (this.formClient.form.valid) {
-      this.clientService.insert(this.client);
-      this.router.navigate( ["/clients"] );
+      this.clientService.insert(this.client).subscribe({
+        next: (client => console.log(client)),
+        error: (error => console.log(error)),
+        complete: () => this.router.navigate( ["/clients"] )
+      });
     }
   }
 
