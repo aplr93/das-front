@@ -11,27 +11,22 @@ const LS_KEY: string = "clients";
 })
 export class ClientService {
 
-  readonly BASE_URL: string = 'http://localhost:8080/customers/';
-
-  readonly HTTP_OPTIONS = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
+  readonly BASE_URL: string = 'http://localhost:8111/customers/';
 
   constructor(private httpClient: HttpClient) { }
 
-
-
   insert(newClient: Client): Observable<Client> {
     newClient.id = this.createUserId();
-
-    return this.httpClient.post<Client>(this.BASE_URL, JSON.stringify(newClient), this.HTTP_OPTIONS);
+    return this.httpClient.post<Client>(this.BASE_URL, newClient);
   }
 
   findById(clientId: number): Observable<Client> {
     let findByIdUrl = this.BASE_URL + clientId + '/';
-    return this.httpClient.get<Client>(findByIdUrl, this.HTTP_OPTIONS);
+    return this.httpClient.get<Client>(findByIdUrl);
   }
 
   listAll(): Observable<Client[]>{
-    return this.httpClient.get<Client[]>(this.BASE_URL, this.HTTP_OPTIONS);
+    return this.httpClient.get<Client[]>(this.BASE_URL);
   }
   findByCPF(cpf: string): Observable<Client | undefined>{
     let clientListObservable = this.listAll();
@@ -41,31 +36,12 @@ export class ClientService {
   }
 
   update(client: Client): Observable<Client>{
-    return this.httpClient.put<Client>(this.BASE_URL + client.id,
-      JSON.stringify(client),
-      this.HTTP_OPTIONS);
+    return this.httpClient.put<Client>(this.BASE_URL + client.id, client);
   }
 
   remove(id: number): Observable<Client>{
-    return this.httpClient.delete<Client>(this.BASE_URL + id, this.HTTP_OPTIONS);
+    return this.httpClient.delete<Client>(this.BASE_URL + id);
   }
-
-  // private iterateAndUpdateClientList(updatedClient: Client, currentClientList: Client[]): Client[]{
-  //   currentClientList.forEach( (object, index, objectList) => {
-  //     if (updatedClient.id === object.id) {
-  //       objectList[index] = updatedClient;
-  //     }
-  //   });
-  //   return currentClientList;
-  // }
-
-  // private searchOrCreateClient(id: number, clientList: Client[]): Client{
-  //   let client = clientList.find(client => client.id === id);
-  //   if(!client){
-  //     client = new Client();
-  //   }
-  //   return client;
-  // }
 
   private createUserId(): number {
     return new Date().getTime(); // seconds since epoch

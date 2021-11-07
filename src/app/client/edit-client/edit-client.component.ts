@@ -12,7 +12,7 @@ import { ClientService } from '../services/client.service';
 export class EditClientComponent implements OnInit {
 
   @ViewChild("formClient") formClient!: NgForm;
-  client!: Client;
+  client: Client = new Client();
 
   constructor(
     private clientService: ClientService,
@@ -22,13 +22,18 @@ export class EditClientComponent implements OnInit {
 
   ngOnInit(): void {
     let id = +this.route.snapshot.params['id'];
-    this.client = this.clientService.findById(id);
+    this.clientService.findById(id).subscribe(
+      (client) => this.client = client
+    );
   }
 
-  update(): void {    
+  update(): void {
     if (this.formClient.form.valid) {
-      this.clientService.update(this.client);
-      this.router.navigate(['/clients']);
+      this.clientService.update(this.client).subscribe({
+        next: (client) => console.log(client),
+        error: (error) => console.log(error),
+        complete: () => this.router.navigate(['/clients'])
+      });
     }
   }
 

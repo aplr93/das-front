@@ -20,14 +20,14 @@ export class InsertOrderComponent implements OnInit {
   order! : Order;
   allProducts!: Product[];
   products!: Product[];
-  
+
   page = 1;
   pageSize = 4;
   collectionSize!: number;
 
   today = this.calendar.getToday();
   datePicker: NgbDateStruct = this.today;
-  
+
   timePicker!: NgbTimeStruct;
   spinners: boolean = false;
 
@@ -61,7 +61,7 @@ export class InsertOrderComponent implements OnInit {
       this.router.navigate( ["/orders"] );
     }
   }
-  
+
 
   refreshProducts(): void {
     this.products = this.allProducts
@@ -70,15 +70,24 @@ export class InsertOrderComponent implements OnInit {
 
 
   searchCPF(Cpf: string) {
-    let customer = this.clientService.findByCPF(Cpf.replace(/\D/g,''))
-    if (customer){
-      this.cpfNotFound = false;
-      this.order.client = customer;
-    }
-    else{
-      this.cpfNotFound = true;
-      this.order.client = undefined;
-    }
+    this.clientService.findByCPF(Cpf.replace(/\D/g,'')).subscribe({
+      next: (customer) => {
+        if (customer){
+          this.cpfNotFound = false;
+          this.order.client = customer;
+        }
+        else{
+          this.cpfNotFound = true;
+          this.order.client = undefined;
+        }
+      },
+      error: (error) =>{
+        console.log(error);
+        this.cpfNotFound = true;
+        this.order.client = undefined;
+      }
+    });
+
   }
 
 
@@ -93,7 +102,7 @@ export class InsertOrderComponent implements OnInit {
     $event.preventDefault();
     this.order.items!.forEach( (item) => {
       if ( orderItem.product?.id === item.product?.id && item.quantity != null && item.quantity > 0){
-        item.quantity = item.quantity-1; 
+        item.quantity = item.quantity-1;
       }
     })
   }
@@ -118,7 +127,7 @@ export class InsertOrderComponent implements OnInit {
     })
   }
 
-  
+
   addProduct($event: any, product: Product, qtd: string): void{
     $event.preventDefault();
     if( parseInt(qtd)>0 && parseInt(qtd)<=1000 ){
@@ -138,7 +147,7 @@ export class InsertOrderComponent implements OnInit {
 
   toggleTimeSpinners(): void {
     this.spinners = !this.spinners;
-  } 
+  }
 
 
   closeCpfAlert(): void {

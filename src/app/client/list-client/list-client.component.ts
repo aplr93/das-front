@@ -18,22 +18,19 @@ export class ListClientComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.listAll().subscribe(
-      clientList => this.clients = clientList
-    );
+    this.listAllClients();
   }
 
-  listAll(): Observable<Client[]> {
-    return this.clientService.listAll();
+  listAllClients(): void{
+    this.clientService.listAll().subscribe(
+      clientList => this.clients = clientList
+    );
   }
 
   remove($event: any, client: Client): void {
     $event.preventDefault();
     if (this.userConfirmsRemoval(client)) {
-      this.removeClientIfRegistered(client);
-      this.listAll().subscribe(
-        clientList => this.clients = clientList
-      );
+      this.removeClient(client);
     }
   }
 
@@ -41,11 +38,11 @@ export class ListClientComponent implements OnInit {
     return confirm('Deseja realmente remover a pessoa "' + client.firstName + '"?');
   }
 
-  removeClientIfRegistered(client: Client): void{
-    if (client.id)
-    {
-      this.clientService.remove(client.id);
-    }
+  removeClient(client: Client): void{
+    this.clientService.remove(client.id!)
+      .subscribe(
+        () => this.listAllClients()
+      );
   }
 
 }
