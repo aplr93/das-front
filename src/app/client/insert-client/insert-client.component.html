@@ -16,7 +16,7 @@
         [(ngModel)]="client.cpf"
         #cpf="ngModel"
       />
-      
+
       <div
         class="alert alert-danger"
         *ngIf="cpf.errors && (cpf.dirty || cpf.touched)"
@@ -85,5 +85,9 @@
     <a class="btn btn-secondary" [routerLink]="['/clients']">
       <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
     </a>
+
+    <div class="alert alert-danger" *ngIf="transactionErrorMessage">
+        {{transactionErrorMessage}}
+    </div>
   </form>
 </div>

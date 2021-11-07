@@ -13,6 +13,7 @@ export class EditClientComponent implements OnInit {
 
   @ViewChild("formClient") formClient!: NgForm;
   client: Client = new Client();
+  transactionErrorMessage: string = "";
 
   constructor(
     private clientService: ClientService,
@@ -30,11 +31,19 @@ export class EditClientComponent implements OnInit {
   update(): void {
     if (this.formClient.form.valid) {
       this.clientService.update(this.client).subscribe({
-        next: (client) => console.log(client),
-        error: (error) => console.log(error),
-        complete: () => this.router.navigate(['/clients'])
+        error: (errorResponse) => this.displayError(errorResponse),
+        complete: () => this.browseToClientsPage()
       });
     }
+  }
+
+  browseToClientsPage(): void {
+    this.router.navigate( ["/clients"] );
+  }
+
+  displayError(errorResponse: any): void{
+    console.log(errorResponse);
+    this.transactionErrorMessage = errorResponse.error;
   }
 
 }

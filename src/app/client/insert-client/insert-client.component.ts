@@ -13,6 +13,7 @@ export class InsertClientComponent implements OnInit {
 
   @ViewChild('formClient') formClient!: NgForm;
   client!: Client;
+  transactionErrorMessage: string = "";
 
   constructor(
     private clientService: ClientService,
@@ -26,11 +27,18 @@ export class InsertClientComponent implements OnInit {
   insert(): void {
     if (this.formClient.form.valid) {
       this.clientService.insert(this.client).subscribe({
-        next: (client => console.log(client)),
-        error: (error => console.log(error)),
-        complete: () => this.router.navigate( ["/clients"] )
+        error: errorResponse => this.displayError(errorResponse),
+        complete: () => this.browseToClientsPage()
       });
     }
   }
 
+  browseToClientsPage(): void {
+    this.router.navigate( ["/clients"] );
+  }
+
+  displayError(errorResponse: any): void{
+    console.log(errorResponse);
+    this.transactionErrorMessage = errorResponse.error;
+  }
 }
