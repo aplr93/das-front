@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
@@ -15,7 +16,7 @@ describe('InsertProductComponent', () => {
     await TestBed.configureTestingModule(
       {
       declarations: [ InsertProductComponent ],
-      imports: [RouterTestingModule.withRoutes([]), FormsModule],
+      imports: [RouterTestingModule.withRoutes([]), FormsModule, HttpClientTestingModule]
     })
     .compileComponents();
   });

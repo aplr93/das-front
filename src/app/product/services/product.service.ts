@@ -1,52 +1,52 @@
 import { Injectable } from '@angular/core';
 import { Product } from 'src/app/shared/models/product.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment as env } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
-const LS_KEY: string = "products";
+//const LS_KEY: string = "products";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  constructor() { }
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+
+  constructor(
+    private httpClient: HttpClient,
+  ) { }
+
+  //products: Product[] = [];
+  URL = env.BASE_URL + "products/";
+
+
+  listAll(): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(this.URL, this.httpOptions);
+  }
 
   
-  listAll(): Product[]{
-    const products = localStorage.getItem(LS_KEY);
-    return products ? JSON.parse(products) : [];
+  searchById(id: number): Observable<Product> {
+    return this.httpClient.get<Product>(this.URL + id, this.httpOptions);
+  }
+  
+
+  insert( product: Product): Observable<Product> {
+    return this.httpClient.post<Product>(this.URL, JSON.stringify(product), this.httpOptions);
   }
 
 
-  insert(product: Product): void {
-    const products = this.listAll();
-    product.id = new Date().getTime();
-    products.push(product);
-    localStorage.setItem(LS_KEY, JSON.stringify(products) );
+  update(product: Product): Observable<Product>{
+    return this.httpClient.put<Product>(this.URL + product.id, JSON.stringify(product), this.httpOptions);
   }
 
 
-  searchById(id: number): Product{
-    const products: Product[] = this.listAll();
-    return products.find(product => product.id === id)!;
-  }
-
-
-  update(product: Product): void{
-    const products: Product[] = this.listAll();
-
-    products.forEach( (obj, index, objs) => {
-      if (product.id === obj.id){
-        objs[index] = product;
-      }
-    });
-    localStorage.setItem(LS_KEY, JSON.stringify(products) );
-  }
-
-
-  remove(id: number): void{
-    let products: Product[] = this.listAll();
-    products = products.filter(product => product.id !== id);
-    localStorage.setItem(LS_KEY, JSON.stringify(products) );
+  remove(id: number): Observable<Product>{
+    return this.httpClient.delete<Product>(this.URL + id, this.httpOptions);
   }
 
 }
