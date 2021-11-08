@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,7 +13,9 @@ describe('EditOrderComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ EditOrderComponent ],
-      imports: [RouterTestingModule.withRoutes([]), FormsModule, NgbModule, NgxMaskModule.forRoot() ],
+      imports: [RouterTestingModule.withRoutes([]), 
+        FormsModule, NgbModule, NgxMaskModule.forRoot(), 
+        HttpClientTestingModule ],
     })
     .compileComponents();
   });

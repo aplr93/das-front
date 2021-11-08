@@ -18,7 +18,7 @@ import { OrderService } from '../services/order.service';
 export class InsertOrderComponent implements OnInit {
   @ViewChild('formOrder') formOrder! : NgForm;
   order! : Order;
-  allProducts!: Product[];
+  allProducts: Product[] = [];
   products!: Product[];
   
   page = 1;
@@ -39,7 +39,7 @@ export class InsertOrderComponent implements OnInit {
     private productService: ProductService,
     private clientService: ClientService,
     private router: Router,
-    private calendar: NgbCalendar
+    private calendar: NgbCalendar,
   ) { }
 
 
@@ -48,8 +48,7 @@ export class InsertOrderComponent implements OnInit {
     this.order.items = [];
     this.order.date = new Date();
     this.dateToTimePicker();
-    this.allProducts = this.listAllProducts();
-    this.refreshProducts();
+    this.listAllProducts();
   }
 
 
@@ -82,10 +81,20 @@ export class InsertOrderComponent implements OnInit {
   }
 
 
-  listAllProducts(): Product[]{
-    let products = this.productService.listAll();
-    this.collectionSize = products.length;
-    return products;
+  listAllProducts(): void{
+    this.productService.listAll().subscribe(
+      (prods: Product[]) => {
+        if (prods == null) {
+          this.allProducts = [];
+        }
+        else {
+          this.allProducts = prods;
+        }
+        //this.changeDetectorRef.markForCheck();
+        this.collectionSize = this.allProducts.length;
+        this.refreshProducts();
+      }
+    );
   }
 
 

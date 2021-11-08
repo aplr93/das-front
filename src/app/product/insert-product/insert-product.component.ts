@@ -25,7 +25,7 @@ export class InsertProductComponent implements OnInit {
 
   insert(): void{
     if (this.formProduct.form.valid) {
-      this.productService.insert(this.product);
+      this.productService.insert(this.product).subscribe();
       this.router.navigate( ["/products"] );
     }
   }

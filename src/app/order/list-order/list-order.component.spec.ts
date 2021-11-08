@@ -8,7 +8,7 @@ describe('ListOrderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ListOrderComponent ]
+      declarations: [ ListOrderComponent ],
     })
     .compileComponents();
   });

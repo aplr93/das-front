@@ -12,7 +12,7 @@ import { ProductService } from '../services/product.service';
 export class EditProductComponent implements OnInit {
 
   @ViewChild("formProduct") formProduct!: NgForm;
-  product!: Product;
+  product: Product = new Product(0, "");
 
   constructor(
     private productService: ProductService,
@@ -22,12 +22,21 @@ export class EditProductComponent implements OnInit {
 
   ngOnInit(): void {
     let id = +this.route.snapshot.params['id'];
-    this.product = id ? this.productService.searchById(id) : new Product(0,"");
+    this.productService.searchById(id).subscribe(
+      (prod: Product) => {
+        if (prod == null) {
+          this.product = new Product(0, "");
+        }
+        else {
+          this.product = prod;
+        }
+      }
+    );
   }
 
   update(): void {
     if (this.formProduct.form.valid) {
-      this.productService.update(this.product);
+      this.productService.update(this.product).subscribe();
       this.router.navigate(['/products']);
     }
   }

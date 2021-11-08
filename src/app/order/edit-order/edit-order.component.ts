@@ -20,7 +20,7 @@ export class EditOrderComponent implements OnInit {
   @ViewChild("formOrder") formOrder!: NgForm;
   order!: Order;
 
-  allProducts!: Product[];
+  allProducts: Product[] = [];
   products!: Product[];
   
   page = 1;
@@ -46,8 +46,7 @@ export class EditOrderComponent implements OnInit {
     let id = +this.route.snapshot.params['id'];
     this.order = id ? this.orderService.searchById(id) : new Order(0, new Date(), new Client, []);
     this.dateToDatetimePicker();
-    this.allProducts = this.listAllProducts();
-    this.refreshProducts();
+    this.listAllProducts();
   }
 
 
@@ -67,10 +66,19 @@ export class EditOrderComponent implements OnInit {
   }
 
 
-  listAllProducts(): Product[]{
-    let products = this.productService.listAll();
-    this.collectionSize = products.length;
-    return products;
+  listAllProducts(): void{
+    this.productService.listAll().subscribe(
+      (prods: Product[]) => {
+        if (prods == null) {
+          this.allProducts = [];
+        }
+        else {
+          this.allProducts = prods;
+        }
+        this.collectionSize = this.allProducts.length;
+        this.refreshProducts();
+      }
+    );
   }
 
 
