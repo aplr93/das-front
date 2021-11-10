@@ -11,8 +11,8 @@ import { ProductService } from '../services/product.service';
 })
 export class InsertProductComponent implements OnInit {
 
-  @ViewChild('formProduct') formProduct! : NgForm;
-  product! : Product;
+  @ViewChild('formProduct') formProduct!: NgForm;
+  product!: Product;
 
   constructor(
     private productService: ProductService,
@@ -23,10 +23,12 @@ export class InsertProductComponent implements OnInit {
     this.product = new Product();
   }
 
-  insert(): void{
+  insert(): void {
     if (this.formProduct.form.valid) {
-      this.productService.insert(this.product).subscribe();
-      this.router.navigate( ["/products"] );
+      this.productService.insert(this.product).subscribe({
+        next: () => this.router.navigate(["/products"]),
+        error: (err: Error) => console.error('Failed to create product: ' + err)
+      });
     }
   }
 
