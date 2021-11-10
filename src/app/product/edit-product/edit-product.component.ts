@@ -20,24 +20,30 @@ export class EditProductComponent implements OnInit {
     private router: Router
   ) { }
 
+
   ngOnInit(): void {
     let id = +this.route.snapshot.params['id'];
-    this.productService.searchById(id).subscribe(
-      (prod: Product) => {
-        if (prod == null) {
-          this.product = new Product(0, "");
-        }
-        else {
+    this.productService.searchById(id).subscribe({
+      next: (prod: Product) => {
+        if (prod != null) {
           this.product = prod;
         }
+        else throw Error;
+      },
+      error: (err: Error) => {
+        console.error('Failed to retrive product data: ' + err);
+        this.router.navigate(['/products']);
       }
-    );
+    });
   }
+
 
   update(): void {
     if (this.formProduct.form.valid) {
-      this.productService.update(this.product).subscribe();
-      this.router.navigate(['/products']);
+      this.productService.update(this.product).subscribe({
+        next: () => this.router.navigate(["/products"]),
+        error: (err: Error) => console.error('Failed to update product: ' + err)
+      });
     }
   }
 

@@ -13,8 +13,8 @@ export class ListProductComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) { }
+    private changeDetectorRef: ChangeDetectorRef,
+    ) { }
 
   
   ngOnInit(): void {
@@ -40,8 +40,8 @@ export class ListProductComponent implements OnInit {
   remove($event: any, product: Product): void {
     $event.preventDefault();
     if (confirm('Deseja realmente remover o produto "' + product.description + '"?')) {
-      this.productService.remove(product.id!);
-      this.listAll();
+      this.productService.remove(product.id!)
+        .subscribe( () => this.listAll() )
     }
   }
 }

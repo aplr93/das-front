@@ -2,9 +2,7 @@ import { TestBed, } from '@angular/core/testing';
 import { Product } from 'src/app/shared/models/product.model';
 import { ProductService } from './product.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-
-
+import { of } from 'rxjs';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 
@@ -51,12 +49,10 @@ describe('ProductService', () => {
 
     let product!: Product;
     productService.insert(newProduct).subscribe(
-      (prod) => {
-        product = prod;
-      }
+      (prod) => product = prod
     )
-    expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
     expect(JSON.stringify(product)).toEqual(JSON.stringify(newProduct));
+    expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
   })
 
 
