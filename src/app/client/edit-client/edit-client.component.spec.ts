@@ -1,5 +1,3 @@
-
-import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +9,6 @@ describe('EditClientComponent', () => {
   let fixture: ComponentFixture<EditClientComponent>;
 
   beforeEach(async () => {
-    // const spy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'delete']);
     await TestBed.configureTestingModule({
       declarations: [ EditClientComponent ],
       imports: [RouterTestingModule.withRoutes([]), FormsModule, HttpClientTestingModule],

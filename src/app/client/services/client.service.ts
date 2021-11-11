@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { filter, map, single } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
+import { map } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
 import { Client } from '../../shared/models';
-
-const LS_KEY: string = "clients";
 
 @Injectable({
   providedIn: 'root'
