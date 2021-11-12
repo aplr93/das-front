@@ -90,7 +90,6 @@ export class InsertOrderComponent implements OnInit {
         else {
           this.allProducts = prods;
         }
-        //this.changeDetectorRef.markForCheck();
         this.collectionSize = this.allProducts.length;
         this.refreshProducts();
       }
@@ -158,11 +157,7 @@ export class InsertOrderComponent implements OnInit {
   orderIsValid(): boolean{
     let hasProducts = this.order.items!
       .filter(item => item.quantity! > 0).length > 0 ? true : false;
-
-    if (this.order.client && hasProducts )
-      return true;
-    else
-      return false;
+    return Boolean(this.order.client) && hasProducts;
   }
 
 
