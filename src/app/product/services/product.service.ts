@@ -4,7 +4,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 
-//const LS_KEY: string = "products";
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +15,11 @@ export class ProductService {
       'Content-Type': 'application/json'
     })
   };
+  URL = env.BASE_URL + "products/";
 
   constructor(
     private httpClient: HttpClient,
   ) { }
-
-  //products: Product[] = [];
-  URL = env.BASE_URL + "products/";
-
 
   listAll(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.URL, this.httpOptions);

@@ -34,12 +34,12 @@ describe('ProductService', () => {
   it('should return the same list of products that was inserted', () => {
     httpClientSpy.get.and.returnValue(of(mockProducts));
 
-    let products: Product[] = [];
     productService.listAll().subscribe(
-      (prods) => products = prods
-    )
-    expect(JSON.stringify(products)).toEqual(JSON.stringify(mockProducts));
-    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+      (productList) => {
+        expect(JSON.stringify(productList)).toEqual(JSON.stringify(mockProducts));
+        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+      }
+    );
   });
 
 
@@ -47,12 +47,13 @@ describe('ProductService', () => {
     let newProduct = new Product(0, "Notebook Dell");
     httpClientSpy.post.and.returnValue(of(newProduct));
 
-    let product!: Product;
     productService.insert(newProduct).subscribe(
-      (prod) => product = prod
-    )
-    expect(JSON.stringify(product)).toEqual(JSON.stringify(newProduct));
-    expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+      (productList) => {
+        expect(JSON.stringify(productList)).toEqual(JSON.stringify(newProduct));
+        expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+
+      }
+    );
   })
 
 
@@ -60,12 +61,13 @@ describe('ProductService', () => {
     let bic = mockProducts[0];
     httpClientSpy.get.and.returnValue(of(bic));
 
-    let product!: Product;
     productService.searchById(1).subscribe(
-      (prod) => product = prod
-    )
-    expect(product.description).toEqual("Caneta Bic Cristal");
-    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+      (product) => {
+        expect(product.description).toEqual("Caneta Bic Cristal");
+        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+
+      }
+    );
   })
 
 
@@ -73,12 +75,13 @@ describe('ProductService', () => {
     let pneu = new Product(3, "Pneu Novo MD");
     httpClientSpy.put.and.returnValue(of(pneu));
 
-    let product!: Product;
     productService.update(new Product(3, "Pneu Novo MD")).subscribe(
-      (prod) => product = prod
-    )
-    expect(product.description).toEqual("Pneu Novo MD");
-    expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
+      (product) => {
+        expect(product.description).toEqual("Pneu Novo MD");
+        expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
+
+      }
+    );
   })
 
 
@@ -86,12 +89,12 @@ describe('ProductService', () => {
     let cachaca = mockProducts[1];
     httpClientSpy.delete.and.returnValue(of(cachaca));
 
-    let product!: Product;
     productService.remove(2).subscribe(
-      (prod) => product = prod
+      (product) => {
+        expect(product.description).toEqual("Cachaça Velho Barreiro");
+        expect(httpClientSpy.delete.calls.count()).toBe(1, 'one call');
+      }
     );
-    expect(product.description).toEqual("Cachaça Velho Barreiro");
-    expect(httpClientSpy.delete.calls.count()).toBe(1, 'one call');
   })
 
 });

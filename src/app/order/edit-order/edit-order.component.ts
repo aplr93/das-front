@@ -137,11 +137,7 @@ export class EditOrderComponent implements OnInit {
   orderIsValid(): boolean{
     let hasProducts = this.order.items!
       .filter(item => item.quantity! > 0).length > 0 ? true : false;
-
-    if (this.order.client && hasProducts )
-      return true;
-    else
-      return false;
+    return Boolean(this.order.client) && hasProducts;
   }
 
 

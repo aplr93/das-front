@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/shared/models/product.model';
 import { ProductService } from '../services/product.service';
 
@@ -12,8 +12,7 @@ export class ListProductComponent implements OnInit {
   products: Product[] = [];
 
   constructor(
-    private productService: ProductService,
-    private changeDetectorRef: ChangeDetectorRef,
+    private productService: ProductService
     ) { }
 
   
@@ -31,7 +30,6 @@ export class ListProductComponent implements OnInit {
         else {
           this.products = prods;
         }
-        this.changeDetectorRef.markForCheck();
       }
     );
   }
