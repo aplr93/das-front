@@ -16,7 +16,7 @@
               [(ngModel)]="client.cpf"
               #cpf="ngModel"
             />
-            
+
             <div
               class="alert alert-danger"
               *ngIf="cpf.errors && (cpf.dirty || cpf.touched)"
@@ -27,7 +27,7 @@
               </div>
             </div>
           </div>
-      
+
           <div class="form-group">
             <label for="firstName">Nome:</label>
             <input
@@ -50,7 +50,7 @@
               </div>
             </div>
           </div>
-      
+
           <div class="form-group">
               <label for="lastName">Sobrenome:</label>
               <input
@@ -80,5 +80,8 @@
         <a class="btn btn-secondary" [routerLink]="['/clients']">
             <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
         </a>
+        <div class="alert alert-danger" *ngIf="transactionErrorMessage">
+          {{transactionErrorMessage}}
+        </div>
     </form>
 </div>

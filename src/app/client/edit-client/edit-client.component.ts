@@ -12,7 +12,8 @@ import { ClientService } from '../services/client.service';
 export class EditClientComponent implements OnInit {
 
   @ViewChild("formClient") formClient!: NgForm;
-  client!: Client;
+  client: Client = new Client();
+  transactionErrorMessage: string = "";
 
   constructor(
     private clientService: ClientService,
@@ -22,14 +23,27 @@ export class EditClientComponent implements OnInit {
 
   ngOnInit(): void {
     let id = +this.route.snapshot.params['id'];
-    this.client = this.clientService.findById(id);
+    this.clientService.findById(id).subscribe(
+      (client) => this.client = client
+    );
   }
 
-  update(): void {    
+  update(): void {
     if (this.formClient.form.valid) {
-      this.clientService.update(this.client);
-      this.router.navigate(['/clients']);
+      this.clientService.update(this.client).subscribe({
+        error: (errorResponse) => this.displayError(errorResponse),
+        complete: () => this.browseToClientsPage()
+      });
     }
+  }
+
+  browseToClientsPage(): void {
+    this.router.navigate( ["/clients"] );
+  }
+
+  displayError(errorResponse: any): void{
+    console.log(errorResponse);
+    this.transactionErrorMessage = errorResponse.error;
   }
 
 }

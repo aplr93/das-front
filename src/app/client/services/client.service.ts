@@ -1,70 +1,44 @@
 import { Injectable } from '@angular/core';
-
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
 import { Client } from '../../shared/models';
-
-const LS_KEY: string = "clients";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClientService {
 
-  constructor() { }
+  readonly BASE_URL: string = 'http://localhost:8111/customers/';
 
-  listAll(): Client[]{
-    const clients = localStorage.getItem(LS_KEY);
-    return clients ? JSON.parse(clients) : [];
-  }
+  constructor(private httpClient: HttpClient) { }
 
-  insert(newClient: Client): void {
+  insert(newClient: Client): Observable<Client> {
     newClient.id = this.createUserId();
-
-    const existingClients = this.listAll();
-    existingClients.push(newClient);
-    localStorage.setItem(LS_KEY, JSON.stringify(existingClients));
+    return this.httpClient.post<Client>(this.BASE_URL, newClient);
   }
 
-  findById(clientId: number): Client{
-    const clients: Client[] = this.listAll();
-    let client = this.searchOrCreateClient(clientId, clients);
-    return client;
+  findById(clientId: number): Observable<Client> {
+    let findByIdUrl = this.BASE_URL + clientId + '/';
+    return this.httpClient.get<Client>(findByIdUrl);
   }
 
-  findByCPF(cpf: string): Client | undefined{
-    let clientList: Client[] = this.listAll();
-    let client = clientList.find( client => client.cpf === cpf);
-    return client;
+  listAll(): Observable<Client[]>{
+    return this.httpClient.get<Client[]>(this.BASE_URL);
+  }
+  findByCPF(cpf: string): Observable<Client | undefined>{
+    let clientListObservable = this.listAll();
+    return clientListObservable.pipe(
+      map(clientList => clientList.find(client => client.cpf === cpf))
+    );
   }
 
-  update(client: Client): void{
-    let clientList: Client[] = this.listAll();
-    clientList = this.iterateAndUpdateClientList(client, clientList);
-
-    localStorage.setItem(LS_KEY, JSON.stringify(clientList));
+  update(client: Client): Observable<Client>{
+    return this.httpClient.put<Client>(this.BASE_URL + client.id, client);
   }
 
-  remove(id: number): void{
-    let clients: Client[] = this.listAll();
-    clients = clients.filter(client => client.id !== id);
-
-    localStorage.setItem(LS_KEY, JSON.stringify(clients) );
-  }
-
-  private iterateAndUpdateClientList(updatedClient: Client, currentClientList: Client[]): Client[]{
-    currentClientList.forEach( (object, index, objectList) => {
-      if (updatedClient.id === object.id) {
-        objectList[index] = updatedClient;
-      }
-    });
-    return currentClientList;
-  }
-
-  private searchOrCreateClient(id: number, clientList: Client[]): Client{
-    let client = clientList.find(client => client.id === id);
-    if(!client){
-      client = new Client();
-    }
-    return client;
+  remove(id: number): Observable<Client>{
+    return this.httpClient.delete<Client>(this.BASE_URL + id);
   }
 
   private createUserId(): number {

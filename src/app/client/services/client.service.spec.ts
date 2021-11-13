@@ -1,14 +1,24 @@
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { Client } from '../../shared/models/client.model';
 import { ClientService } from './client.service';
 
 describe('ClientService', () => {
   let service: ClientService;
+  let httpClientSpy: jasmine.SpyObj<HttpClient>;
   let clients: Client[] = [];
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    const spy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'put', 'delete']);
+    TestBed.configureTestingModule({
+      providers: [
+        ClientService,
+        {provide: HttpClient, useValue: spy }
+      ],
+    });
+    httpClientSpy = TestBed.inject(HttpClient) as jasmine.SpyObj<HttpClient>;
     service = TestBed.inject(ClientService);
-    
+
     clients = [
       new Client(1, "98111111111", "Luis", "Silveira"),
       new Client(2, "98222222222", "Carlos", "Barbosa"),
@@ -16,21 +26,6 @@ describe('ClientService', () => {
       new Client(4, "98444444444", "João Paulo", "Ortiz"),
     ];
 
-    var store: any = {};
-    store["clients"] = JSON.stringify(clients);
-
-    spyOn(Storage.prototype, 'getItem').and.callFake((key: string): string => {
-      return store[key];
-    });
-    spyOn(Storage.prototype, 'removeItem').and.callFake((key: string): void => {
-      delete store[key];
-    });
-    spyOn(Storage.prototype, 'setItem').and.callFake((key: string, value: string): string => {
-      return store[key] = <string>value;
-    });
-    spyOn(Storage.prototype, 'clear').and.callFake(() => {
-      store = {};
-    });
   });
 
   it('should be created', () => {
@@ -38,29 +33,49 @@ describe('ClientService', () => {
   });
 
   it('should return the same list of clients that was inserted', () => {
-    expect(
-      JSON.stringify(service.listAll()))
-      .toEqual(JSON.stringify(clients));
+    httpClientSpy.get.and.returnValue(of(clients));
+    service.listAll().subscribe(
+      clientList => expect(clientList).toEqual(clients)
+    );
+    expect(httpClientSpy.get.calls.count()).toEqual(1);
   });
 
-  it('should insert a new object', () => {
-    service.insert(new Client(5, "555555555555", "Luana", "Oliveira"));
-    expect(service.listAll().length).toEqual(5);
+  it('should insert a new valid client', () => {
+    let newClient = new Client(5, "55555555555", "Luana", "Oliveira");
+    httpClientSpy.post.and.returnValue(of(clients.push(newClient)));
+    service.insert(newClient).subscribe(
+      returnedClient => expect(returnedClient).toBeTruthy()
+    );
+    expect(httpClientSpy.post.calls.count()).toEqual(1);
   });
-
 
   it('should return "Luis" when searching for id=1', () => {
-    expect(service.findById(1).firstName).toEqual("Luis");
-  })
+    httpClientSpy.get.and.returnValue(of(clients[0]));
+    service.findById(1).subscribe(
+      client => expect(client.firstName).toEqual('Luis')
+    );
+    expect(httpClientSpy.get.calls.count()).toEqual(1);
+  });
 
   it('should update "Carlos" to "Gabriela" in "Carlos Barbosa"', () => {
-    service.update(new Client(2, "98222222222", "Gabriela", "Barbosa"));
-    expect(service.findById(2).firstName).toEqual("Gabriela");
+    let clientToBeEdited = new Client(2, "98222222222", "Gabriela", "Barbosa");
+    httpClientSpy.put.and.returnValue(of(clientToBeEdited));
+    service.update(clientToBeEdited).subscribe(
+      returnedClient => {
+        expect(returnedClient).toBeTruthy();
+        expect(returnedClient.firstName).toEqual('Gabriela');
+      }
+    );
+    expect(httpClientSpy.put.calls.count()).toEqual(1);
   })
 
   it('should remove client with id=2', () => {
-    service.remove(3);
-    expect(service.listAll().length).toEqual(3);
+    let clientToBeRemoved = clients[1];
+    httpClientSpy.delete.and.returnValue(of(clientToBeRemoved));
+    service.remove(1).subscribe(
+      returnedClient => expect(returnedClient).toBeTruthy()
+    );
+    expect(httpClientSpy.delete.calls.count()).toEqual(1);
   })
 
 });

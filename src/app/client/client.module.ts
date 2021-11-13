@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { InsertClientComponent } from './insert-client/';
 import { EditClientComponent } from './edit-client/';
 import { NgxMaskModule } from 'ngx-mask';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { NgxMaskModule } from 'ngx-mask';
     CommonModule,
     RouterModule,
     FormsModule,
-    NgxMaskModule.forRoot()
+    NgxMaskModule.forRoot(),
+    HttpClientModule
   ],
   providers: [
     ClientService,
