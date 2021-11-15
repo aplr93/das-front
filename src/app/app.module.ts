@@ -7,6 +7,7 @@ import { ProductModule } from './product/product.module';
 import { ClientModule } from './client';
 import { OrderModule } from './order/order.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ProductModule,
     ClientModule,
     OrderModule,
-    NgbModule
+    NgbModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

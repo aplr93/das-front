@@ -9,25 +9,37 @@ import { ProductService } from '../services/product.service';
 })
 export class ListProductComponent implements OnInit {
 
-  products!: Product[];
+  products: Product[] = [];
 
   constructor(
     private productService: ProductService
-  ) { }
+    ) { }
 
+  
   ngOnInit(): void {
-    this.products = this.listAll();
+    this.listAll();
   }
 
-  listAll(): Product[]{
-    return this.productService.listAll();
+
+  listAll(): void{
+    this.productService.listAll().subscribe(
+      (prods: Product[]) => {
+        if (prods == null) {
+          this.products = [];
+        }
+        else {
+          this.products = prods;
+        }
+      }
+    );
   }
+
 
   remove($event: any, product: Product): void {
     $event.preventDefault();
     if (confirm('Deseja realmente remover o produto "' + product.description + '"?')) {
-      this.productService.remove(product.id!);
-      this.products = this.listAll();
+      this.productService.remove(product.id!)
+        .subscribe( () => this.listAll() )
     }
   }
 }

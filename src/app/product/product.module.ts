@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InsertProductComponent } from './insert-product/insert-product.component';
 import { EditProductComponent } from './edit-product/edit-product.component';
+import { ProductService } from './services/product.service';
 
 
 @NgModule({
@@ -16,10 +17,10 @@ import { EditProductComponent } from './edit-product/edit-product.component';
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [
-    ProductModule
+    ProductService
   ]
 })
 export class ProductModule { }
