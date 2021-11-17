@@ -9,36 +9,49 @@ import { OrderService } from '../services/order.service';
 })
 export class ListOrderComponent implements OnInit {
 
-  orders!: Order[];
-  allOrders!: Order[];
+  orders: Order[] = [];
+  allOrders: Order[] = [];
 
   constructor(
     private orderService: OrderService
   ) { }
 
   ngOnInit(): void {
-    this.allOrders = this.listAll();
-    this.orders = this.allOrders;
+    this.listAll();
   }
 
-  listAll(): Order[]{
-    return this.orderService.listAll();
+
+  listAll(): void{
+    this.orderService.listAll().subscribe(
+      (orders: Order[]) => {
+        if (orders == null){
+          this.allOrders = [];
+        }
+        else{
+          this.allOrders = orders;
+        }
+        this.orders = this.allOrders;
+      }
+    )
   }
+
 
   remove($event: any, order: Order): void {
     $event.preventDefault();
     if (confirm('Deseja realmente remover o pedido #' + order.id + ' ?')) {
-      this.orderService.remove(order.id!);
-      this.allOrders = this.listAll();
-      this.removeFilter();
+      this.orderService.remove(order.id!).subscribe(
+        () => this.listAll()
+      );
     }
   }
+
 
   filterByCPF(cpf: string): void{
     this.orders = this.allOrders
       .filter( (order) => order.customer?.cpf == cpf.replace(/\D/g,''));
   }
 
+  
   removeFilter(): void{
     this.orders = this.allOrders;
   }

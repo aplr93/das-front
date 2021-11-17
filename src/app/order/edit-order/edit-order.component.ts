@@ -18,7 +18,7 @@ import { OrderService } from '../services/order.service';
 export class EditOrderComponent implements OnInit {
 
   @ViewChild("formOrder") formOrder!: NgForm;
-  order!: Order;
+  order: Order = new Order(0, new Date(), new Customer, []);
 
   allProducts: Product[] = [];
   products!: Product[];
@@ -44,9 +44,26 @@ export class EditOrderComponent implements OnInit {
 
   ngOnInit(): void {
     let id = +this.route.snapshot.params['id'];
-    this.order = id ? this.orderService.searchById(id) : new Order(0, new Date(), new Customer, []);
-    this.dateToDatetimePicker();
+    this.getOrderData(id);
     this.listAllProducts();
+  }
+
+
+  getOrderData(id: number) {
+    this.orderService.searchById(id).subscribe({
+      next: (order: Order) => {
+        if (order != null) {
+          this.order = order;
+          this.dateToDatetimePicker();
+        }
+        else
+          throw Error;
+      },
+      error: (err: Error) => {
+        console.error('Failed to retrive order data: ' + err);
+        this.router.navigate(['/orders']);
+      }
+    });
   }
 
 
@@ -54,8 +71,10 @@ export class EditOrderComponent implements OnInit {
     if ( this.orderIsValid() ) {
       this.datetimePickerToDate();
       this.order.items = this.order.items!.filter(item => item.quantity! > 0);
-      this.orderService.update(this.order);
-      this.router.navigate(['/orders']);
+      this.orderService.update(this.order).subscribe({
+        next: () => this.router.navigate(['/orders']),
+        error: (err: Error) => console.error('Failed to update order: ' + err)
+      });
     }
   }
 
@@ -161,7 +180,7 @@ export class EditOrderComponent implements OnInit {
 
   private dateToTimePicker() {
     this.timePicker = {
-      hour: this.order.date!.getHours(),
+      hour: this.order.date!.getUTCHours(),
       minute: this.order.date!.getMinutes(),
       second: this.order.date!.getSeconds()
     };

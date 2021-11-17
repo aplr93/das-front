@@ -56,8 +56,11 @@ export class InsertOrderComponent implements OnInit {
     if ( this.orderIsValid() ) {
       this.datetimePickerToDate();
       this.order.items = this.order.items!.filter(item => item.quantity! > 0);
-      this.orderService.insert(this.order);
-      this.router.navigate( ["/orders"] );
+      this.orderService.insert(this.order).subscribe({
+        next: () =>  this.router.navigate( ["/orders"] ),
+        error: (err: Error) => console.error('Failed to create order: ' + err)
+      })
+      
     }
   }
 
