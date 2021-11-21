@@ -25,11 +25,11 @@ export class ProductService {
     return this.httpClient.get<Product[]>(this.URL, this.httpOptions);
   }
 
-  
+
   searchById(id: number): Observable<Product> {
     return this.httpClient.get<Product>(this.URL + id, this.httpOptions);
   }
-  
+
 
   insert( product: Product): Observable<Product> {
     return this.httpClient.post<Product>(this.URL, JSON.stringify(product), this.httpOptions);

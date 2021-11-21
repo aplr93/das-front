@@ -13,8 +13,8 @@ describe('EditOrderComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ EditOrderComponent ],
-      imports: [RouterTestingModule.withRoutes([]), 
-        FormsModule, NgbModule, NgxMaskModule.forRoot(), 
+      imports: [RouterTestingModule.withRoutes([]),
+        FormsModule, NgbModule, NgxMaskModule.forRoot(),
         HttpClientTestingModule ],
     })
     .compileComponents();

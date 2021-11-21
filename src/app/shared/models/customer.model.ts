@@ -1,4 +1,4 @@
-export class Client {
+export class Customer {
     constructor(
         public id?: number,
         public cpf?: string,

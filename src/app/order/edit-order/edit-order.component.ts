@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from 'src/app/product/services/product.service';
-import { Client } from 'src/app/shared/models';
+import { Customer } from 'src/app/shared/models';
 import { OrderItem } from 'src/app/shared/models/order-item.model';
 import { Order } from 'src/app/shared/models/order.model';
 import { Product } from 'src/app/shared/models/product.model';
@@ -22,7 +22,7 @@ export class EditOrderComponent implements OnInit {
 
   allProducts: Product[] = [];
   products!: Product[];
-  
+
   page = 1;
   pageSize = 4;
   collectionSize!: number;
@@ -32,7 +32,7 @@ export class EditOrderComponent implements OnInit {
   timePicker!: NgbTimeStruct;
   spinners: boolean = false;
 
- 
+
   constructor(
     private orderService: OrderService,
     private productService: ProductService,
@@ -44,7 +44,7 @@ export class EditOrderComponent implements OnInit {
 
   ngOnInit(): void {
     let id = +this.route.snapshot.params['id'];
-    this.order = id ? this.orderService.searchById(id) : new Order(0, new Date(), new Client, []);
+    this.order = id ? this.orderService.searchById(id) : new Order(0, new Date(), new Customer, []);
     this.dateToDatetimePicker();
     this.listAllProducts();
   }
@@ -86,7 +86,7 @@ export class EditOrderComponent implements OnInit {
     $event.preventDefault();
     this.order.items!.forEach( (item) => {
       if ( orderItem.product?.id === item.product?.id && item.quantity != null && item.quantity > 0){
-        item.quantity = item.quantity-1; 
+        item.quantity = item.quantity-1;
       }
     })
   }
@@ -111,7 +111,7 @@ export class EditOrderComponent implements OnInit {
     })
   }
 
-  
+
   addProduct($event: any, product: Product, qtd: string): void{
     $event.preventDefault();
     if( parseInt(qtd)>0 && parseInt(qtd)<=1000 ){
@@ -131,13 +131,13 @@ export class EditOrderComponent implements OnInit {
 
   toggleTimeSpinners(): void {
     this.spinners = !this.spinners;
-  } 
+  }
 
 
   orderIsValid(): boolean{
     let hasProducts = this.order.items!
       .filter(item => item.quantity! > 0).length > 0 ? true : false;
-    return Boolean(this.order.client) && hasProducts;
+    return Boolean(this.order.customer) && hasProducts;
   }
 
 

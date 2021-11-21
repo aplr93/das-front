@@ -5,7 +5,7 @@ import { OrderService } from './order.service';
 
 
 // {id: 1634999841258, date: "2021-10-06T11:37:03.284Z",…}
-// client: {id: 1634999816068, cpf: "08774201905", firstName: "Maria Carolina", lastName: "tes"}
+// customer: {id: 1634999816068, cpf: "08774201905", firstName: "Maria Carolina", lastName: "tes"}
 // cpf: "08774201905"
 // firstName: "Maria Carolina"
 // id: 1634999816068
@@ -22,7 +22,7 @@ import { OrderService } from './order.service';
         //Order Model
         // public id?: number,
         // public date?: Date,
-        // public client?: Client,
+        // public customer?: Customer,
         // public items?: OrderItem[]
 
        // OrderItem Model
@@ -37,7 +37,7 @@ describe('OrderService', () => {
 
 
   let orders: Order[] = [
-    new Order(1, mockedDate, {id: 1634999816068, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"}, [{product: {id: 1, description: "Coca Cola"}, quantity: 1}]), 
+    new Order(1, mockedDate, {id: 1634999816068, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"}, [{product: {id: 1, description: "Coca Cola"}, quantity: 1}]),
     new Order(2, mockedDate, {id: 1634999816069, cpf: "73829873821", firstName: "Maria", lastName: "Carolina"}, [ {product: {id: 2, description: "Água com Gás"}, quantity: 20 } , {product: {id: 2, description: "Boné Vans"}, quantity: 1 }]),
     new Order(3, mockedDate, {id: 1634999816070, cpf: "73291293982", firstName: "Joao", lastName: "Santos"}, [{product: {id: 3, description: "Violão Tagima"}, quantity: 5}]),
   ];
@@ -66,7 +66,7 @@ describe('OrderService', () => {
 
   });
 
-  
+
 
   it('should be created', () => {
     expect(orderService).toBeTruthy();
@@ -86,24 +86,24 @@ describe('OrderService', () => {
   })
 
 
-  it('when search id 1 should return today`s day, today`s month, todays`s  year, client id 1634999816068, client cpf 08774201905, client firstName Joao and client lastName Balzer', () => {
+  it('when search id 1 should return today`s day, today`s month, todays`s  year, customer id 1634999816068, customer cpf 08774201905, customer firstName Joao and customer lastName Balzer', () => {
 
     const date = orderService.searchById(1).date;
-    const client = orderService.searchById(1).client;
+    const customer = orderService.searchById(1).customer;
 
     let record_day= ((mockedDate.getDate()));
     let record_month = ((mockedDate.getMonth() + 1));
     let record_year = (mockedDate.getFullYear());
 
     let mocked_day= ((mockedDate.getDate()));
-    let mocked_month = ((mockedDate.getMonth() + 1)); 
+    let mocked_month = ((mockedDate.getMonth() + 1));
     let mocked_year = (mockedDate.getFullYear());
 
     expect(record_day).toEqual(mocked_day);
     expect(record_month).toEqual(mocked_month);
     expect(mocked_year).toEqual(mocked_year);
 
-    expect(orderService.searchById(1).client).toEqual({id: 1634999816068, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"});
+    expect(orderService.searchById(1).customer).toEqual({id: 1634999816068, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"});
 
   })
 
@@ -112,7 +112,7 @@ describe('OrderService', () => {
     expect(orderService.searchById(3).items).toEqual([{ product: {id: 456, description: "Pneu de Carro"}, quantity: 1}]);
   })
 
-  
+
   it('should remove order with id=2', () => {
    orderService.remove(2);
    expect(orderService.listAll().length).toEqual(2);

@@ -2,17 +2,17 @@
 
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
-        <div *ngIf="order.client" class="card">
+        <div *ngIf="order.customer" class="card">
             <div class="card-body">
-                {{order.client.firstName}} {{order.client.lastName}} (CPF: {{order.client.cpf! | mask: '000.000.000-00' }})
+                {{order.customer.firstName}} {{order.customer.lastName}} (CPF: {{order.customer.cpf! | mask: '000.000.000-00' }})
             </div>
         </div>
-        
+
         <form class="col d-flex"></form>
 
         <div class="col d-flex">
             <ngb-timepicker [(ngModel)]="timePicker" [seconds]="true" [spinners]="spinners"></ngb-timepicker>
-            <button class="btn btn-outline-secondary far fa-clock" 
+            <button class="btn btn-outline-secondary far fa-clock"
             (click)="toggleTimeSpinners()" type="button"></button>
         </div>
 
@@ -54,7 +54,7 @@
                         <td>{{ product.description }}</td>
                         <td class="text-center" style="width: 250px">
                             <form class="d-flex">
-                                <input class="form-control me-2" type="number" min="0" max="1000" step="1" 
+                                <input class="form-control me-2" type="number" min="0" max="1000" step="1"
                                     placeholder="Qtd" aria-label="Qtd" #Qtd>
                                 <a href="#" title="Add" alt="Add" class="btn btn-xs btn-success"
                                     (click)="addProduct($event, product, Qtd.value); Qtd.value=''" style="width: 150px">

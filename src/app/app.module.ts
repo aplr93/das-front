@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ProductModule } from './product/product.module';
-import { ClientModule } from './client';
+import { CustomerModule } from './customer';
 import { OrderModule } from './order/order.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
@@ -17,7 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     ProductModule,
-    ClientModule,
+    CustomerModule,
     OrderModule,
     NgbModule,
     HttpClientModule

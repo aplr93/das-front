@@ -1,6 +1,6 @@
 <h1>Novo Cliente</h1>
 <div class="well">
-  <form #formClient="ngForm">
+  <form #formCustomer="ngForm">
 
     <div class="form-group">
       <label for="cpf">CPF:</label>
@@ -13,7 +13,7 @@
         maxlength="14"
         required
         mask="000.000.000-00"
-        [(ngModel)]="client.cpf"
+        [(ngModel)]="customer.cpf"
         #cpf="ngModel"
       />
 
@@ -37,7 +37,7 @@
         name="firstName"
         minlength="2"
         required
-        [(ngModel)]="client.firstName"
+        [(ngModel)]="customer.firstName"
         #firstName="ngModel"
       />
       <div
@@ -60,7 +60,7 @@
           name="lastName"
           minlength="2"
           required
-          [(ngModel)]="client.lastName"
+          [(ngModel)]="customer.lastName"
           #lastName="ngModel"
         />
         <div
@@ -78,11 +78,11 @@
       type="button"
       class="btn btn-primary"
       (click)="insert()"
-      [disabled]="!formClient.form.valid"
+      [disabled]="!formCustomer.form.valid"
     >
       <i class="fa fa-save" aria-hidden="true"></i> Salvar
     </button>
-    <a class="btn btn-secondary" [routerLink]="['/clients']">
+    <a class="btn btn-secondary" [routerLink]="['/customers']">
       <i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar
     </a>
 

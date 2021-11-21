@@ -1,11 +1,11 @@
-import { Client } from ".";
+import { Customer } from ".";
 import { OrderItem } from "./order-item.model";
 
 export class Order {
     constructor(
         public id?: number,
         public date?: Date,
-        public client?: Client,
+        public customer?: Customer,
         public items?: OrderItem[]
     ) {}
 }
