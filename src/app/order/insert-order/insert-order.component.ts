@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbCalendar, NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
-import { ClientService } from 'src/app/client/services';
+import { CustomerService } from 'src/app/customer/services';
 import { ProductService } from 'src/app/product/services/product.service';
 import { OrderItem } from 'src/app/shared/models/order-item.model';
 import { Order } from 'src/app/shared/models/order.model';
@@ -37,7 +37,7 @@ export class InsertOrderComponent implements OnInit {
   constructor(
     private orderService: OrderService,
     private productService: ProductService,
-    private clientService: ClientService,
+    private customerService: CustomerService,
     private router: Router,
     private calendar: NgbCalendar,
   ) { }
@@ -69,21 +69,21 @@ export class InsertOrderComponent implements OnInit {
 
 
   searchCPF(Cpf: string) {
-    this.clientService.findByCPF(Cpf.replace(/\D/g,'')).subscribe({
+    this.customerService.findByCPF(Cpf.replace(/\D/g,'')).subscribe({
       next: (customer) => {
         if (customer){
           this.cpfNotFound = false;
-          this.order.client = customer;
+          this.order.customer = customer;
         }
         else{
           this.cpfNotFound = true;
-          this.order.client = undefined;
+          this.order.customer = undefined;
         }
       },
       error: (error) =>{
         console.log(error);
         this.cpfNotFound = true;
-        this.order.client = undefined;
+        this.order.customer = undefined;
       }
     });
 
@@ -166,7 +166,7 @@ export class InsertOrderComponent implements OnInit {
   orderIsValid(): boolean{
     let hasProducts = this.order.items!
       .filter(item => item.quantity! > 0).length > 0 ? true : false;
-    return Boolean(this.order.client) && hasProducts;
+    return Boolean(this.order.customer) && hasProducts;
   }
 
 

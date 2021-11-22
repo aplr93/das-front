@@ -20,12 +20,12 @@
 
 <ngb-accordion [closeOthers]="true">
     <ngb-panel *ngFor="let order of orders" >
-        
+
         <ng-template ngbPanelHeader>
             <div class="d-flex align-items-center justify-content-between">
-                <div class="col m-0">Pedido #{{order.id}} ({{order.client!.firstName}} {{order.client!.lastName}})</div>
+                <div class="col m-0">Pedido #{{order.id}} ({{order.customer!.firstName}} {{order.customer!.lastName}})</div>
                 <div class="col">
-                    <button ngbPanelToggle class="btn btn-outline-secondary  m-2"> 
+                    <button ngbPanelToggle class="btn btn-outline-secondary  m-2">
                         <i class="far fa-eye"></i> Ver
                     </button>
                 </div>
@@ -37,7 +37,7 @@
                 <div class="row justify-content-start">
                     <div class="col">
                         <p><b>ID:</b> {{order.id}} </p>
-                        <p><b>Cliente:</b> {{order.client!.firstName}} {{order.client!.lastName}}</p>
+                        <p><b>Cliente:</b> {{order.customer!.firstName}} {{order.customer!.lastName}}</p>
                         <p><b>Data:</b> {{order.date! | json | mask: "0000/M0/d0 Hh:m0:s0" }} </p>
                     </div>
                     <div class="col" style="width: 300px">

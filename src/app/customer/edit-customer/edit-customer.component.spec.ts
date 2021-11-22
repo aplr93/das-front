@@ -2,22 +2,22 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InsertClientComponent } from './insert-client.component';
+import { EditCustomerComponent } from './edit-customer.component';
 
-describe('InsertClientComponent', () => {
-  let component: InsertClientComponent;
-  let fixture: ComponentFixture<InsertClientComponent>;
+describe('EditCustomerComponent', () => {
+  let component: EditCustomerComponent;
+  let fixture: ComponentFixture<EditCustomerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InsertClientComponent ],
+      declarations: [ EditCustomerComponent ],
       imports: [RouterTestingModule.withRoutes([]), FormsModule, HttpClientTestingModule],
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InsertClientComponent);
+    fixture = TestBed.createComponent(EditCustomerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

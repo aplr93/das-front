@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClientService } from './services/';
-import { ListClientComponent } from './list-client/';
+import { CustomerService } from './services';
+import { ListCustomerComponent } from './list-customer';
 import { FormsModule } from '@angular/forms';
 
 import { RouterModule } from '@angular/router';
-import { InsertClientComponent } from './insert-client/';
-import { EditClientComponent } from './edit-client/';
+import { InsertCustomerComponent } from './insert-customer';
+import { EditCustomerComponent } from './edit-customer';
 import { NgxMaskModule } from 'ngx-mask';
 import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
   declarations: [
-    ListClientComponent,
-    InsertClientComponent,
-    EditClientComponent
+    ListCustomerComponent,
+    InsertCustomerComponent,
+    EditCustomerComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +25,7 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule
   ],
   providers: [
-    ClientService,
+    CustomerService,
   ]
 })
-export class ClientModule { }
+export class CustomerModule { }

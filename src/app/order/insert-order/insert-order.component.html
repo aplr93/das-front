@@ -3,16 +3,16 @@
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
         <form #formOrder="ngForm" class="col d-flex">
-            <input class="form-control me-2" name="CPF" id = "CPF" type="search" placeholder="CPF" 
+            <input class="form-control me-2" name="CPF" id = "CPF" type="search" placeholder="CPF"
             aria-label="Search" #CPF mask="000.000.000-00">
             <button class="btn btn-outline-success" type="button" (click)="searchCPF(CPF.value)">Buscar</button>
         </form>
-        
+
         <form class="col d-flex"></form>
 
         <div class="col d-flex">
             <ngb-timepicker [(ngModel)]="timePicker" [seconds]="true" [spinners]="spinners"></ngb-timepicker>
-            <button class="btn btn-outline-secondary far fa-clock" 
+            <button class="btn btn-outline-secondary far fa-clock"
             (click)="toggleTimeSpinners()" type="button"></button>
         </div>
 
@@ -37,15 +37,15 @@
 </ng-template>
 
 <div class="d-flex" *ngIf="cpfNotFound">
-    <ngb-alert type="danger" [dismissible]="false"> CPF não encontrado 
-        <button type="button" class="btn-close" data-bs-dismiss="alert" 
+    <ngb-alert type="danger" [dismissible]="false"> CPF não encontrado
+        <button type="button" class="btn-close" data-bs-dismiss="alert"
         (click)="closeCpfAlert()" aria-label="Close" ></button>
     </ngb-alert>
 </div>
 
-<div *ngIf="order.client" class="card">
+<div *ngIf="order.customer" class="card">
     <div class="card-body">
-        {{order.client.firstName}} {{order.client.lastName}} (CPF: {{order.client.cpf! | mask: '000.000.000-00' }})
+        {{order.customer.firstName}} {{order.customer.lastName}} (CPF: {{order.customer.cpf! | mask: '000.000.000-00' }})
     </div>
 </div>
 
@@ -67,7 +67,7 @@
                         <td>{{ product.description }}</td>
                         <td class="text-center" style="width: 250px">
                             <form class="d-flex">
-                                <input class="form-control me-2" type="number" min="0" max="1000" step="1" 
+                                <input class="form-control me-2" type="number" min="0" max="1000" step="1"
                                     placeholder="Qtd" aria-label="Qtd" #Qtd>
                                 <a href="#" title="Add" alt="Add" class="btn btn-xs btn-success"
                                     (click)="addProduct($event, product, Qtd.value); Qtd.value=''" style="width: 150px">

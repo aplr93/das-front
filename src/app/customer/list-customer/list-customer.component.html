@@ -6,25 +6,25 @@
       <th>Nome</th>
       <th>Sobrenome</th>
       <th class="text-center">
-        <a [routerLink]="['/clients/new']"
+        <a [routerLink]="['/customers/new']"
           href="#" title="New" alt="New" class="btn btn-xs btn-success">
           <i class="fa fa-plus" aria-hidden="true"></i> Novo
         </a>
       </th>
     </tr>
-    <tr *ngFor="let client of clients">
-      <td> {{ client.cpf! | mask: '000.000.000-00' }} </td>
-      <td> {{ client.firstName }} </td>
-      <td> {{ client.lastName }} </td>
+    <tr *ngFor="let customer of customers">
+      <td> {{ customer.cpf! | mask: '000.000.000-00' }} </td>
+      <td> {{ customer.firstName }} </td>
+      <td> {{ customer.lastName }} </td>
       <td class="text-center" style="width: 300px">
-        <a href="#" title="Edit" alt="Edit" class="btn btn-xs btn-info" [routerLink]="['/clients/edit', client.id]">
+        <a href="#" title="Edit" alt="Edit" class="btn btn-xs btn-info" [routerLink]="['/customers/edit', customer.id]">
           <i class="fa fa-edit" aria-hidden="true"></i> Editar
         </a>
-        <a href="#" title="Remove" alt="Remove" class="btn btn-xs btn-danger" (click)="remove($event, client)">
+        <a href="#" title="Remove" alt="Remove" class="btn btn-xs btn-danger" (click)="remove($event, customer)">
           <i class="fa fa-times" aria-hidden="true"></i> Remover
         </a>
       </td>
     </tr>
   </tbody>
 </table>
-<p *ngIf="clients.length===0">Nenhum cliente cadastrado.</p>
+<p *ngIf="customers.length===0">Nenhum cliente cadastrado.</p>

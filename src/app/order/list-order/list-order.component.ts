@@ -36,7 +36,7 @@ export class ListOrderComponent implements OnInit {
 
   filterByCPF(cpf: string): void{
     this.orders = this.allOrders
-      .filter( (order) => order.client?.cpf == cpf.replace(/\D/g,''));
+      .filter( (order) => order.customer?.cpf == cpf.replace(/\D/g,''));
   }
 
   removeFilter(): void{
