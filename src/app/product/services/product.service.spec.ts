@@ -3,7 +3,7 @@ import { Product } from 'src/app/shared/models/product.model';
 import { ProductService } from './product.service';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 
 describe('ProductService', () => {
@@ -36,20 +36,20 @@ describe('ProductService', () => {
 
     productService.listAll().subscribe(
       (productList) => {
-        expect(JSON.stringify(productList)).toEqual(JSON.stringify(mockProducts));
+        expect(productList).toEqual(mockProducts);
         expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
       }
     );
   });
 
 
-  it('should insert a new object', () => {
+  it('should insert a new product', () => {
     let newProduct = new Product(0, "Notebook Dell");
     httpClientSpy.post.and.returnValue(of(newProduct));
 
     productService.insert(newProduct).subscribe(
       (productList) => {
-        expect(JSON.stringify(productList)).toEqual(JSON.stringify(newProduct));
+        expect(productList).toEqual(newProduct);
         expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
 
       }
@@ -65,7 +65,6 @@ describe('ProductService', () => {
       (product) => {
         expect(product.description).toEqual("Caneta Bic Cristal");
         expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-
       }
     );
   })
@@ -91,7 +90,7 @@ describe('ProductService', () => {
 
     productService.remove(2).subscribe(
       (product) => {
-        expect(product.description).toEqual("Cachaça Velho Barreiro");
+        expect(product.description).toBeTruthy();
         expect(httpClientSpy.delete.calls.count()).toBe(1, 'one call');
       }
     );

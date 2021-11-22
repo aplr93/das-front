@@ -1,71 +1,72 @@
 import { TestBed } from '@angular/core/testing';
-
 import { Order } from 'src/app/shared/models/order.model';
 import { OrderService } from './order.service';
-
-
-// {id: 1634999841258, date: "2021-10-06T11:37:03.284Z",…}
-// customer: {id: 1634999816068, cpf: "08774201905", firstName: "Maria Carolina", lastName: "tes"}
-// cpf: "08774201905"
-// firstName: "Maria Carolina"
-// id: 1634999816068
-// lastName: "tes"
-// date: "2021-10-06T11:37:03.284Z"
-// id: 1634999841258
-// items: [{product: {id: 1634186149051, description: "teste"}, quantity: 123}]
-// 0: {product: {id: 1634186149051, description: "teste"}, quantity: 123}
-// product: {id: 1634186149051, description: "teste"}
-// description: "teste"
-// id: 1634186149051
-// quantity: 123
-
-        //Order Model
-        // public id?: number,
-        // public date?: Date,
-        // public customer?: Customer,
-        // public items?: OrderItem[]
-
-       // OrderItem Model
-        //public product? : Product,
-        //public quantity? : number
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 
 describe('OrderService', () => {
   let orderService: OrderService;
-
+  let httpClientSpy: jasmine.SpyObj<HttpClient>;
   const mockedDate = new Date(Date.now());
 
-
-  let orders: Order[] = [
-    new Order(1, mockedDate, {id: 1634999816068, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"}, [{product: {id: 1, description: "Coca Cola"}, quantity: 1}]),
-    new Order(2, mockedDate, {id: 1634999816069, cpf: "73829873821", firstName: "Maria", lastName: "Carolina"}, [ {product: {id: 2, description: "Água com Gás"}, quantity: 20 } , {product: {id: 2, description: "Boné Vans"}, quantity: 1 }]),
-    new Order(3, mockedDate, {id: 1634999816070, cpf: "73291293982", firstName: "Joao", lastName: "Santos"}, [{product: {id: 3, description: "Violão Tagima"}, quantity: 5}]),
+  let mockOrders: Order[] = [
+    new Order(1, mockedDate,
+      {
+        id: 1634999816068, cpf: "08774201905", firstName: "João", lastName: "Balzer"
+      },
+      [{
+        product: { id: 1, description: "Coca Cola" }, quantity: 1
+      }]
+    ),
+    new Order(2, mockedDate,
+      {
+        id: 1634999816069, cpf: "73829873821", firstName: "Maria", lastName: "Carolina"
+      },
+      [{
+        product: { id: 2, description: "Água com Gás" }, quantity: 20
+      }, {
+        product: { id: 2, description: "Boné Vans" }, quantity: 1
+      }]
+    ),
+    new Order(3, mockedDate,
+      {
+        id: 1634999816070, cpf: "73291293982", firstName: "João", lastName: "Santos"
+      },
+      [{
+        product: { id: 3, description: "Violão Tagima" }, quantity: 5
+      }]
+    )
   ];
 
+  let newOrder = new Order(4, mockedDate, 
+    { 
+      id: 123123123432, cpf: "08774201905", firstName: "João", lastName: "Balzer" 
+    }, [{ 
+      product: { id: 999, description: "Agua coca Latão" }, quantity: 1 
+    }]
+  );
+
+  let modifiedOrder = new Order(3, mockedDate,
+    {
+      id: 123123123432, cpf: "08774201905", firstName: "João", lastName: "Balzer"
+    },
+    [{
+      product: { id: 456, description: "Pneu de Carro" }, quantity: 1
+    }]
+  );
+
+
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    const spy = jasmine.createSpyObj(HttpClient, ['get', 'post', 'put', 'delete']);
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [OrderService, { provide: HttpClient, useValue: spy }]
+    });
+    httpClientSpy = TestBed.inject(HttpClient) as jasmine.SpyObj<HttpClient>;
     orderService = TestBed.inject(OrderService);
   });
-
-  beforeEach(() => { // mocks localStorage
-    var store: any = {};
-    store["orders"] = JSON.stringify(orders);
-
-    spyOn(Storage.prototype, 'getItem').and.callFake( (key:string):string => {
-     return store[key] || null;
-    });
-    spyOn(Storage.prototype, 'removeItem').and.callFake((key:string):void =>  {
-      delete store[key];
-    });
-    spyOn(Storage.prototype, 'setItem').and.callFake((key:string, value:string):string =>  {
-      return store[key] = <string>value;
-    });
-    spyOn(Storage.prototype , 'clear').and.callFake(() =>  {
-        store = {};
-    });
-
-  });
-
 
 
   it('should be created', () => {
@@ -73,49 +74,68 @@ describe('OrderService', () => {
   });
 
 
-  it('should return the same list of orders that was inserted', () => {
-    expect(
-      JSON.stringify( orderService.listAll() ))
-      .toEqual(JSON.stringify( orders ));
+  it('should return the same list of products that was inserted', () => {
+    httpClientSpy.get.and.returnValue(of(mockOrders));
+
+    orderService.listAll().subscribe(
+      (orderList) => {
+        expect(orderList).toEqual(mockOrders);
+        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+      }
+    );
   });
 
 
+
   it('should insert a new order', () => {
-    orderService.insert(new Order(4, mockedDate, {id: 123123123432, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"}, [{ product: {id: 999, description: "Agua coca Latão"}, quantity: 1}]));
-    expect(orderService.listAll().length).toEqual(4);
+    httpClientSpy.post.and.returnValue(of(newOrder));
+
+    orderService.insert(newOrder).subscribe(
+      (order) => {
+        expect(order).toEqual(newOrder);
+        expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+      }
+    );
   })
 
 
-  it('when search id 1 should return today`s day, today`s month, todays`s  year, customer id 1634999816068, customer cpf 08774201905, customer firstName Joao and customer lastName Balzer', () => {
+  it('should return an order with customer "João" and product "Coca Cola" when searching for id=1', () => {
+    let joao = mockOrders[0];
+    httpClientSpy.get.and.returnValue(of(joao));
 
-    const date = orderService.searchById(1).date;
-    const customer = orderService.searchById(1).customer;
-
-    let record_day= ((mockedDate.getDate()));
-    let record_month = ((mockedDate.getMonth() + 1));
-    let record_year = (mockedDate.getFullYear());
-
-    let mocked_day= ((mockedDate.getDate()));
-    let mocked_month = ((mockedDate.getMonth() + 1));
-    let mocked_year = (mockedDate.getFullYear());
-
-    expect(record_day).toEqual(mocked_day);
-    expect(record_month).toEqual(mocked_month);
-    expect(mocked_year).toEqual(mocked_year);
-
-    expect(orderService.searchById(1).customer).toEqual({id: 1634999816068, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"});
-
+    orderService.searchById(1).subscribe(
+      (order) => {
+        expect(order.customer?.firstName).toEqual("João");
+        expect(order.items && order.items[0].product?.description).toEqual("Coca Cola")
+        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+      }
+    );
   })
 
-  it('should update order id 3 to id 456 , "Pneu de Carro" and quantity 1', () => {
-    orderService.update(new Order(3, mockedDate, {id: 123123123432, cpf: "08774201905", firstName: "Joao", lastName: "Balzer"}, [{ product: {id: 456, description: "Pneu de Carro"}, quantity: 1}]));
-    expect(orderService.searchById(3).items).toEqual([{ product: {id: 456, description: "Pneu de Carro"}, quantity: 1}]);
+
+  it('should update the product in order id=3 to: id=456 , "Pneu de Carro" and quantity 1', () => {
+    httpClientSpy.put.and.returnValue(of(modifiedOrder));
+
+    orderService.update(modifiedOrder).subscribe(
+      (order) => {
+        expect(order).toEqual(modifiedOrder);
+        expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
+      }
+    );
   })
+
 
 
   it('should remove order with id=2', () => {
-   orderService.remove(2);
-   expect(orderService.listAll().length).toEqual(2);
+    let orderToBeRemoved = mockOrders[1];
+    httpClientSpy.delete.and.returnValue(of(orderToBeRemoved));
+
+    orderService.remove(2).subscribe(
+      (order) => {
+        expect(order).toBeTruthy();
+        expect(httpClientSpy.delete.calls.count()).toBe(1, 'one call');
+      }
+    );
   })
 
 });
