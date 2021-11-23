@@ -1,53 +1,47 @@
 import { Injectable } from '@angular/core';
 import { Order } from 'src/app/shared/models/order.model';
-
-const LS_KEY: string = "orders";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment as env } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class OrderService {
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+  readonly URL = env.BASE_URL + "orders/";
 
-  constructor() { }
+  constructor(
+    private httpClient: HttpClient,
+  ) { }
 
-  
-  listAll(): Order[]{
-    const orders = localStorage.getItem(LS_KEY);
-    return orders ? JSON.parse(orders) : [];
+
+  listAll(): Observable<Order[]> {
+    return this.httpClient.get<Order[]>(this.URL, this.httpOptions);
   }
 
 
-  insert(order: Order): void {
-    const orders = this.listAll();
-    order.id = new Date().getTime();
-    orders.push(order);
-    localStorage.setItem(LS_KEY, JSON.stringify(orders) );
+  searchById(id: number): Observable<Order> {
+    return this.httpClient.get<Order>(this.URL + id, this.httpOptions);
   }
 
 
-  searchById(id: number): Order{
-    const orders: Order[] = this.listAll();
-    return orders.find(order => order.id === id)!;
+  insert(order: Order): Observable<Order> {
+    return this.httpClient.post<Order>(this.URL, order, this.httpOptions);
   }
 
 
-  update(order: Order): void{
-    const orders: Order[] = this.listAll();
-
-    orders.forEach( (obj, index, objs) => {
-      if (order.id === obj.id){
-        objs[index] = order;
-      }
-    });
-    localStorage.setItem(LS_KEY, JSON.stringify(orders) );
+  update(order: Order): Observable<Order> {
+    return this.httpClient.put<Order>(this.URL + order.id, order, this.httpOptions)
   }
 
 
-  remove(id: number): void{
-    let orders: Order[] = this.listAll();
-    orders = orders.filter(order => order.id !== id);
-    localStorage.setItem(LS_KEY, JSON.stringify(orders) );
+  remove(id: number): Observable<Order> {
+    return this.httpClient.delete<Order>(this.URL + id, this.httpOptions);
   }
 
 }
