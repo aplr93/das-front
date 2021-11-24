@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { CustomerService } from '../services/customer.service';
 import { Customer } from '../../shared/models';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-list-customer',
@@ -11,19 +12,14 @@ import { Customer } from '../../shared/models';
 export class ListCustomerComponent implements OnInit {
 
   customers: Customer[] = [];
+  errorMessage: String = "";
 
   constructor(
     private customerService: CustomerService,
   ) { }
 
   ngOnInit(): void {
-    this.listAllCustomers();
-  }
-
-  listAllCustomers(): void{
-    this.customerService.listAll().subscribe(
-      customerList => this.customers = customerList
-    );
+    this.refreshScreen();
   }
 
   remove($event: any, customer: Customer): void {
@@ -33,15 +29,27 @@ export class ListCustomerComponent implements OnInit {
     }
   }
 
-  userConfirmsRemoval(customer: Customer): boolean {
+  private listAllCustomers(): void{
+    this.customerService.listAll().subscribe(
+      customerList => this.customers = customerList
+    );
+  }
+
+  private userConfirmsRemoval(customer: Customer): boolean {
     return confirm('Deseja realmente remover o cliente "' + customer.firstName + '"?');
   }
 
-  removeCustomer(customer: Customer): void{
+  private removeCustomer(customer: Customer): void{
     this.customerService.remove(customer.id!)
-      .subscribe(
-        () => this.listAllCustomers()
-      );
+      .subscribe({
+        next: () => this.refreshScreen(),
+        error: (errorObject: HttpErrorResponse) => this.errorMessage = errorObject.error
+      });
+  }
+
+  private refreshScreen(){
+    this.listAllCustomers();
+    this.errorMessage = "";
   }
 
 }
