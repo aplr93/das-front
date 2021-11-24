@@ -3,13 +3,14 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from "@angular/common/http";
 import { Customer } from '../../shared/models';
+import { environment as env } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
 
-  readonly BASE_URL: string = 'http://localhost:8111/customers/';
+  readonly BASE_URL = env.BASE_URL + "customers/";
 
   constructor(private httpClient: HttpClient) { }
 
