@@ -21,18 +21,21 @@ export class ListOrderComponent implements OnInit {
   }
 
 
-  listAll(): void{
+  listAll(): void {
     this.orderService.listAll().subscribe(
-      (orders: Order[]) => {
-        if (orders == null){
-          this.allOrders = [];
-        }
-        else{
-          this.allOrders = orders;
-        }
-        this.orders = this.allOrders;
-      }
+      (orders: Order[]) => this.loadOrders(orders)
     )
+  }
+
+
+  loadOrders(orders: Order[]): void {
+    if (orders == null) {
+      this.allOrders = [];
+    }
+    else {
+      this.allOrders = orders;
+    }
+    this.orders = this.allOrders;
   }
 
 
@@ -46,13 +49,13 @@ export class ListOrderComponent implements OnInit {
   }
 
 
-  filterByCPF(cpf: string): void{
+  filterByCPF(cpf: string): void {
     this.orders = this.allOrders
-      .filter( (order) => order.customer?.cpf == cpf.replace(/\D/g,''));
+      .filter((order) => order.customer?.cpf == cpf.replace(/\D/g, ''));
   }
 
-  
-  removeFilter(): void{
+
+  removeFilter(): void {
     this.orders = this.allOrders;
   }
 }

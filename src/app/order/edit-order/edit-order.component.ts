@@ -51,28 +51,39 @@ export class EditOrderComponent implements OnInit {
 
   getOrderData(id: number) {
     this.orderService.searchById(id).subscribe({
-      next: (order: Order) => {
-        if (order != null) {
-          this.order = order;
-          this.dateToDatetimePicker();
-        }
-        else
-          throw Error;
-      },
-      error: (err: Error) => {
-        console.error('Failed to retrive order data: ' + err);
-        this.router.navigate(['/orders']);
-      }
+      next: (returnedOrder: Order) => this.loadOrder(returnedOrder),
+      error: (err: Error) => this.treatOrderLoadingError(err)
     });
   }
 
 
+  browseToOrdersPage() {
+    this.router.navigate(['/orders']);
+  }
+
+
+  loadOrder(returnedOrder: Order): void {
+    if (returnedOrder != null) {
+      this.order = returnedOrder;
+      this.dateToDatetimePicker();
+    }
+    else
+      throw Error;
+  }
+
+
+  treatOrderLoadingError(error: Error) {
+    console.error('Failed to retrive order data: ' + error);
+    this.browseToOrdersPage();
+  }
+
+
   update(): void {
-    if ( this.orderIsValid() ) {
+    if (this.orderIsValid()) {
       this.datetimePickerToDate();
       this.order.items = this.order.items!.filter(item => item.quantity! > 0);
       this.orderService.update(this.order).subscribe({
-        next: () => this.router.navigate(['/orders']),
+        next: () => this.browseToOrdersPage(),
         error: (err: Error) => console.error('Failed to update order: ' + err)
       });
     }
@@ -85,15 +96,10 @@ export class EditOrderComponent implements OnInit {
   }
 
 
-  listAllProducts(): void{
+  listAllProducts(): void {
     this.productService.listAll().subscribe(
-      (prods: Product[]) => {
-        if (prods == null) {
-          this.allProducts = [];
-        }
-        else {
-          this.allProducts = prods;
-        }
+      (returnedProducts: Product[]) => {
+        this.loadProducts(returnedProducts);
         this.collectionSize = this.allProducts.length;
         this.refreshProducts();
       }
@@ -101,11 +107,21 @@ export class EditOrderComponent implements OnInit {
   }
 
 
+  loadProducts(returnedProducts: Product[]) {
+    if (returnedProducts == null) {
+      this.allProducts = [];
+    }
+    else {
+      this.allProducts = returnedProducts;
+    }
+  }
+
+
   removeOne($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.order.items!.forEach( (item) => {
-      if ( orderItem.product?.id === item.product?.id && item.quantity != null && item.quantity > 0){
-        item.quantity = item.quantity-1;
+    this.order.items!.forEach((item) => {
+      if (orderItem.product?.id === item.product?.id && item.quantity != null && item.quantity > 0) {
+        item.quantity = item.quantity - 1;
       }
     })
   }
@@ -113,9 +129,9 @@ export class EditOrderComponent implements OnInit {
 
   addOne($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.order.items!.forEach( (obj) => {
-      if (obj.quantity != null && orderItem.product?.id === obj.product?.id ){
-        obj.quantity = obj.quantity+1;
+    this.order.items!.forEach((obj) => {
+      if (obj.quantity != null && orderItem.product?.id === obj.product?.id) {
+        obj.quantity = obj.quantity + 1;
       }
     })
   }
@@ -123,28 +139,36 @@ export class EditOrderComponent implements OnInit {
 
   removeItem($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.order.items!.forEach( (obj, index, objs) => {
-      if (orderItem.product?.id === obj.product?.id){
-        objs.splice(index,1);
+    this.order.items!.forEach((obj, index, objs) => {
+      if (orderItem.product?.id === obj.product?.id) {
+        objs.splice(index, 1);
       }
     })
   }
 
 
-  addProduct($event: any, product: Product, qtd: string): void{
+  addProduct($event: any, product: Product, qtd: string): void {
     $event.preventDefault();
-    if( parseInt(qtd)>0 && parseInt(qtd)<=1000 ){
-      let found =  false;
-      this.order.items!.forEach( (obj) => {
-        if (obj.product?.id == product.id){
-          obj.quantity! += parseInt(qtd);
-          found = true;
-        }
-      });
-      if (!found){
-        this.order.items!.push( new OrderItem(product, parseInt(qtd)) );
-      }
+    let quantityIncrement = parseInt(qtd);
+    if (this.quantityIsWithinLimits(quantityIncrement)) {
+      this.incrementQuantity(product, quantityIncrement);
     }
+  }
+
+
+  incrementQuantity(product: Product, quantityIncrement: number): void {
+    let index = this.order.items!.findIndex((item) => item.product?.id == product.id);
+    if (index != -1 && this.order?.items) {
+      this.order.items[index].quantity! += quantityIncrement;
+    }
+    else {
+      this.order.items!.push(new OrderItem(product, quantityIncrement));
+    }
+  }
+
+
+  quantityIsWithinLimits(quantity: number): boolean {
+    return quantity > 0 && quantity <= 1000;
   }
 
 
@@ -153,7 +177,7 @@ export class EditOrderComponent implements OnInit {
   }
 
 
-  orderIsValid(): boolean{
+  orderIsValid(): boolean {
     let hasProducts = this.order.items!
       .filter(item => item.quantity! > 0).length > 0 ? true : false;
     return Boolean(this.order.customer) && hasProducts;
@@ -161,7 +185,7 @@ export class EditOrderComponent implements OnInit {
 
 
   dateToDatetimePicker(): void {
-    if (this.order.date){
+    if (this.order.date) {
       this.order.date = new Date(this.order.date!);
       this.dateToTimePicker();
       this.dateToDatePicker();
@@ -169,7 +193,7 @@ export class EditOrderComponent implements OnInit {
   }
 
 
-  private dateToDatePicker() {
+  private dateToDatePicker(): void {
     this.datePicker = {
       day: this.order.date!.getUTCDate(),
       month: this.order.date!.getUTCMonth() + 1,
@@ -178,7 +202,7 @@ export class EditOrderComponent implements OnInit {
   }
 
 
-  private dateToTimePicker() {
+  private dateToTimePicker(): void {
     this.timePicker = {
       hour: this.order.date!.getUTCHours(),
       minute: this.order.date!.getMinutes(),
@@ -191,6 +215,5 @@ export class EditOrderComponent implements OnInit {
     this.order.date?.setUTCFullYear(this.datePicker.year, this.datePicker.month - 1, this.datePicker.day);
     this.order.date?.setUTCHours(this.timePicker.hour, this.timePicker.minute, this.timePicker.second);
   }
-
 
 }
