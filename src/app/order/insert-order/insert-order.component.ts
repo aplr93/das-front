@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgbCalendar, NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 import { CustomerService } from 'src/app/customer/services';
 import { ProductService } from 'src/app/product/services/product.service';
+import { Customer } from 'src/app/shared/models';
 import { OrderItem } from 'src/app/shared/models/order-item.model';
 import { Order } from 'src/app/shared/models/order.model';
 import { Product } from 'src/app/shared/models/product.model';
@@ -16,8 +17,8 @@ import { OrderService } from '../services/order.service';
   styleUrls: ['./insert-order.component.css']
 })
 export class InsertOrderComponent implements OnInit {
-  @ViewChild('formOrder') formOrder! : NgForm;
-  order! : Order;
+  @ViewChild('formOrder') formOrder!: NgForm;
+  order!: Order;
   allProducts: Product[] = [];
   products!: Product[];
 
@@ -52,15 +53,62 @@ export class InsertOrderComponent implements OnInit {
   }
 
 
-  insert(): void{
-    if ( this.orderIsValid() ) {
+  insert(): void {
+    if (this.orderIsValid()) {
       this.datetimePickerToDate();
       this.order.items = this.order.items!.filter(item => item.quantity! > 0);
       this.orderService.insert(this.order).subscribe({
-        next: () =>  this.router.navigate( ["/orders"] ),
+        next: () => this.router.navigate(["/orders"]),
         error: (err: Error) => console.error('Failed to create order: ' + err)
       })
-      
+    }
+  }
+
+
+  searchCPF(Cpf: string) {
+    this.customerService.findByCPF(Cpf.replace(/\D/g, '')).subscribe({
+      next: (returnedCustomer) => this.loadCustomer(returnedCustomer!),
+      error: (error: Error) => this.treatCustomerLoadingError(error)
+    });
+  }
+
+
+  loadCustomer(returnedCustomer: Customer): void {
+    if (returnedCustomer) {
+      this.cpfNotFound = false;
+      this.order.customer = returnedCustomer;
+    }
+    else {
+      this.cpfNotFound = true;
+      this.order.customer = undefined;
+    }
+  }
+
+
+  treatCustomerLoadingError(error: Error): void {
+    console.log(error);
+    this.cpfNotFound = true;
+    this.order.customer = undefined;
+  }
+
+
+  listAllProducts(): void {
+    this.productService.listAll().subscribe(
+      (returnedProducts: Product[]) => {
+        this.loadProducts(returnedProducts);
+        this.collectionSize = this.allProducts.length;
+        this.refreshProducts();
+      }
+    );
+  }
+
+
+  loadProducts(returnedProducts: Product[]) {
+    if (returnedProducts == null) {
+      this.allProducts = [];
+    }
+    else {
+      this.allProducts = returnedProducts;
     }
   }
 
@@ -71,49 +119,11 @@ export class InsertOrderComponent implements OnInit {
   }
 
 
-  searchCPF(Cpf: string) {
-    this.customerService.findByCPF(Cpf.replace(/\D/g,'')).subscribe({
-      next: (customer) => {
-        if (customer){
-          this.cpfNotFound = false;
-          this.order.customer = customer;
-        }
-        else{
-          this.cpfNotFound = true;
-          this.order.customer = undefined;
-        }
-      },
-      error: (error) =>{
-        console.log(error);
-        this.cpfNotFound = true;
-        this.order.customer = undefined;
-      }
-    });
-
-  }
-
-
-  listAllProducts(): void{
-    this.productService.listAll().subscribe(
-      (prods: Product[]) => {
-        if (prods == null) {
-          this.allProducts = [];
-        }
-        else {
-          this.allProducts = prods;
-        }
-        this.collectionSize = this.allProducts.length;
-        this.refreshProducts();
-      }
-    );
-  }
-
-
   removeOne($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.order.items!.forEach( (item) => {
-      if ( orderItem.product?.id === item.product?.id && item.quantity != null && item.quantity > 0){
-        item.quantity = item.quantity-1;
+    this.order.items!.forEach((item) => {
+      if (orderItem.product?.id === item.product?.id && item.quantity != null && item.quantity > 0) {
+        item.quantity = item.quantity - 1;
       }
     })
   }
@@ -121,9 +131,9 @@ export class InsertOrderComponent implements OnInit {
 
   addOne($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.order.items!.forEach( (obj) => {
-      if (obj.quantity != null && orderItem.product?.id === obj.product?.id ){
-        obj.quantity = obj.quantity+1;
+    this.order.items!.forEach((obj) => {
+      if (obj.quantity != null && orderItem.product?.id === obj.product?.id) {
+        obj.quantity = obj.quantity + 1;
       }
     })
   }
@@ -131,28 +141,36 @@ export class InsertOrderComponent implements OnInit {
 
   removeItem($event: any, orderItem: OrderItem): void {
     $event.preventDefault();
-    this.order.items!.forEach( (obj, index, objs) => {
-      if (orderItem.product?.id === obj.product?.id){
-        objs.splice(index,1);
+    this.order.items!.forEach((obj, index, objs) => {
+      if (orderItem.product?.id === obj.product?.id) {
+        objs.splice(index, 1);
       }
     })
   }
 
 
-  addProduct($event: any, product: Product, qtd: string): void{
+  addProduct($event: any, product: Product, qtd: string): void {
     $event.preventDefault();
-    if( parseInt(qtd)>0 && parseInt(qtd)<=1000 ){
-      let found =  false;
-      this.order.items!.forEach( (obj) => {
-        if (obj.product?.id == product.id){
-          obj.quantity! += parseInt(qtd);
-          found = true;
-        }
-      });
-      if (!found){
-        this.order.items!.push( new OrderItem(product, parseInt(qtd)) );
-      }
+    let quantityIncrement = parseInt(qtd);
+    if (this.quantityIsWithinLimits(quantityIncrement)) {
+      this.incrementQuantity(product, quantityIncrement);
     }
+  }
+
+
+  incrementQuantity(product: Product, quantityIncrement: number): void {
+    let index = this.order.items!.findIndex((item) => item.product?.id == product.id);
+    if (index != -1 && this.order?.items) {
+      this.order.items[index].quantity! += quantityIncrement;
+    }
+    else {
+      this.order.items!.push(new OrderItem(product, quantityIncrement));
+    }
+  }
+
+
+  quantityIsWithinLimits(quantity: number): boolean {
+    return quantity > 0 && quantity <= 1000;
   }
 
 
@@ -166,7 +184,7 @@ export class InsertOrderComponent implements OnInit {
   }
 
 
-  orderIsValid(): boolean{
+  orderIsValid(): boolean {
     let hasProducts = this.order.items!
       .filter(item => item.quantity! > 0).length > 0 ? true : false;
     return Boolean(this.order.customer) && hasProducts;

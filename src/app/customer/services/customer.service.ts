@@ -27,6 +27,7 @@ export class CustomerService {
   listAll(): Observable<Customer[]>{
     return this.httpClient.get<Customer[]>(this.BASE_URL);
   }
+  
   findByCPF(cpf: string): Observable<Customer | undefined>{
     let customerListObservable = this.listAll();
     return customerListObservable.pipe(

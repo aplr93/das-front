@@ -23,15 +23,18 @@ export class ListProductComponent implements OnInit {
 
   listAll(): void{
     this.productService.listAll().subscribe(
-      (prods: Product[]) => {
-        if (prods == null) {
-          this.products = [];
-        }
-        else {
-          this.products = prods;
-        }
-      }
+      (returnedProducts: Product[]) => this.loadList(returnedProducts)
     );
+  }
+
+
+  loadList(returnedProducts: Product[]): void {
+    if (returnedProducts == null) {
+      this.products = [];
+    }
+    else {
+      this.products = returnedProducts;
+    }
   }
 
 

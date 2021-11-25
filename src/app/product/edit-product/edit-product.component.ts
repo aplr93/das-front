@@ -24,16 +24,8 @@ export class EditProductComponent implements OnInit {
   ngOnInit(): void {
     let id = +this.route.snapshot.params['id'];
     this.productService.searchById(id).subscribe({
-      next: (prod: Product) => {
-        if (prod != null) {
-          this.product = prod;
-        }
-        else throw Error;
-      },
-      error: (err: Error) => {
-        console.error('Failed to retrive product data: ' + err);
-        this.router.navigate(['/products']);
-      }
+      next: (returnedProduct: Product) => this.loadProduct(returnedProduct),
+      error: (err: Error) => this.treatLoadingError(err)
     });
   }
 
@@ -41,10 +33,29 @@ export class EditProductComponent implements OnInit {
   update(): void {
     if (this.formProduct.form.valid) {
       this.productService.update(this.product).subscribe({
-        next: () => this.router.navigate(["/products"]),
+        next: () => this.browseToProductsPage(),
         error: (err: Error) => console.error('Failed to update product: ' + err)
       });
     }
+  }
+
+
+  loadProduct(returnedProduct: Product): void {
+    if (returnedProduct != null) {
+      this.product = returnedProduct;
+    }
+    else throw Error;
+  }
+
+
+  treatLoadingError(err: Error): void {
+    console.error('Failed to retrive product data: ' + err);
+    this.browseToProductsPage();
+  }
+
+
+  browseToProductsPage(): void {
+    this.router.navigate(['/products']);
   }
 
 }
